@@ -1,4 +1,4 @@
-# Film Composition Training
+# Lubezki
 
 Hey this projects aims to help users practice film composition and lighting (lost arts). It will have two main functionns:
 1) Provide real-time concise image feedback during the framing process.
@@ -13,5 +13,23 @@ Hey this projects aims to help users practice film composition and lighting (los
 - [ ] Build iOS UI
 - [ ] Test
 - [ ] Publish
+
+## Project Structure
+
+```
+film-composition-ai/
+├── backend/                    # FastAPI backend
+│   ├── app/
+│   │   ├── api/v1/endpoints/  # API endpoints
+│   │   ├── core/              # Configuration and database
+│   │   ├── models/            # SQL models (future)
+│   │   ├── schemas/           # Pydantic schemas (future)
+│   │   ├── services/          # Business logic
+│   │   └── utils/             # Utility functions
+│   ├── run.py                 # Development server
+├── frontend-swift/            # Swift frontend (future)
+├── assets/                    # Static assets
+└── docs/                      # API documentation (future)
+```
 
 ## More thoughtful readme pending
