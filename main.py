@@ -1,5 +1,5 @@
 def main():
-    print("Hello from film-composition-ai!")
+    print("Use the backend/app/main.py file to run the API")
 
 
 if __name__ == "__main__":
