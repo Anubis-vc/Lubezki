@@ -1,4 +1,4 @@
-from .image import Image, ImageCreate, ImageUpdate, ImageDelete, ImageResponse
+from .image import Image, ImageCreate, ImageUpdate, ImageDelete, ImageCreateResponse
 from .user import (
     User,
     UserCreate,
