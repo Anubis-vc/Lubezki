@@ -1,45 +1,44 @@
-from pydantic import BaseModel, ConfigDict
+from sqlmodel import SQLModel, Field
 from datetime import datetime
+import uuid
 
 
-# Main database model - represents the complete image record
-class Image(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    id: str
-    user_id: int
-    filename: str
-    original_filename: str
-    file_path: str
-    # in bytes
-    file_size: int
-    mime_type: str
-    uploaded_at: datetime
-    # below updated after complete analysis
-    is_analysis_complete: bool
-    composition_score: int | None = None
+# Database model using SQLModel
+class ImageBase(SQLModel):
+    file_size: int = Field(description="File size in bytes")
+    mime_type: str = Field(max_length=100)
+    created_at: datetime = Field(default_factory=datetime.now)
+    uploaded_at: datetime = Field(default_factory=datetime.now)
+    is_analysis_complete: bool = False
+    composition_score: int | None = Field(default=None, ge=0, le=100)
 
 
-# Request models - what clients send to the API
-class ImageCreate(BaseModel):
-    filename: str
-    file_path: str
-    file_size: int
-    mime_type: str
+class ImageInTable(ImageBase, table=True):
+    id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
+    user_id: int | None = Field(
+        default=None, index=True
+    )  # TODO: look into "back populates"
+    file_path: str = Field(max_length=500)
+
+
+# API request models
+class ImageCreate(ImageBase):
     user_id: int
 
 
-class ImageUpdate(BaseModel):
-    id: str
-    user_id: int
-    is_analysis_complete: bool
-    composition_score: int
+class ImageUpdate(SQLModel):
+    is_analysis_complete: bool | None = None
+    composition_score: int | None = Field(default=None, ge=0, le=100)
 
 
-class ImageDelete(BaseModel):
-    id: str
+# API Response models
+class ImagePublic(ImageBase):
+    id: uuid.UUID
+    file_path: str = Field(max_length=500)
 
 
-# Response models - what clients receive from the API
-class ImageCreateResponse(BaseModel):
-    id: str
+class ImagePublicList(SQLModel):
+    images: list[ImagePublic]
+    total: int
+    limit: int
+    offset: int
