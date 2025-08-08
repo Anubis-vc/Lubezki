@@ -8,20 +8,27 @@ from sqlalchemy.ext.asyncio import (
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.types import JSON
 from typing import Any, AsyncIterator
+# from datetime import datetime as Datetime
 
 from app.core.config import settings
 
 
 class Base(DeclarativeBase):
     __mapper_args__ = {"eager_defaults": True}
-    type_annotation_map = {dict[str, Any]: JSON}
+    type_annotation_map = {
+        dict[str, Any]: JSON,
+        # Datetime: TIMESTAMP
+    }
 
 
 class DatabaseSessionManager:
     def __init__(self, host: str, engine_kwargs: dict[str, Any]):
         self._engine = create_async_engine(host, **engine_kwargs)
         self._sessionmaker = async_sessionmaker(
-            autocommit=False, bind=self._engine, expire_on_commit=False
+            autocommit=False,
+            bind=self._engine,
+            expire_on_commit=False,
+            class_=AsyncSession,
         )
 
     @contextlib.asynccontextmanager
@@ -60,10 +67,25 @@ class DatabaseSessionManager:
 session_manager = DatabaseSessionManager(
     settings.DB_CXN_STRING, {"echo": settings.echo_sql}
 )
+# session_manager = DatabaseSessionManager(
+#     settings.DB_CXN_STRING,
+#     {
+#         "echo": settings.echo_sql,
+#         "pool_pre_ping": True,
+#         "pool_recycle": 300,
+#         "pool_reset_on_return": "commit",
+#         "connect_args": {
+#             "statement_cache_size": 0,  # Disable prepared statement caching
+#             "server_settings": {
+#                 "jit": "off"  # Disable JIT for better compatibility
+#             },
+#         },
+#     },
+# )
 
 
 # TODO: may have to update this like this, don't know tradeoff yet
-# async def get_db():
+# async def get_db_session():
 #     async with session_manager.session() as session:
 #         try:
 #             yield session
@@ -72,6 +94,6 @@ session_manager = DatabaseSessionManager(
 #             if session.in_transaction():
 #                 await session.rollback()
 #             raise
-async def get_db():
+async def get_db_session():
     async with session_manager.session() as session:
         yield session

@@ -1,5 +1,6 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
+from typing import Sequence
 
 
 class BoundingBox(BaseModel):
@@ -25,15 +26,12 @@ class ItemCreate(BaseModel):
     name: str
     bounding_box: BoundingBox
     analysis: str
-
-
-class ItemDelete(BaseModel):
-    item_id: int
+    created_at: datetime = datetime.now()
 
 
 class ItemBulkCreate(BaseModel):
     image_id: int
-    items: list[ItemCreate]
+    items: Sequence[ItemCreate]
 
 
 class ItemResponse(BaseModel):
@@ -42,10 +40,8 @@ class ItemResponse(BaseModel):
     name: str
     bounding_box: BoundingBox
     analysis: str
-    created_at: datetime
 
 
 class ItemListResponse(BaseModel):
-    items: list[ItemResponse]
+    items: Sequence[ItemResponse]
     total_count: int
-    image_id: int

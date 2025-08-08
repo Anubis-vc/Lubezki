@@ -24,6 +24,7 @@ class Settings(BaseSettings):
 
     env: str = "dev"
     echo_sql: bool = False
+    log_level: str = "DEBUG"  # TODO: change to INFO in production
 
     def model_post_init(self, __context):
         self.echo_sql = self.env == "dev"

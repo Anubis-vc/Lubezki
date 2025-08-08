@@ -1,55 +1,59 @@
-from pydantic import BaseModel, EmailStr, ConfigDict
-from datetime import datetime
+"""
+See if we can get this to work without users otherwise ill add in the big users table
+"""
+
+# from pydantic import BaseModel, EmailStr, ConfigDict
+# from datetime import datetime
 
 
-class UserBase(BaseModel):
-    email: EmailStr
+# class UserBase(BaseModel):
+#     email: EmailStr
 
 
-class UserInTable(UserBase):
-    model_config = ConfigDict(from_attributes=True)
+# class UserInTable(UserBase):
+#     model_config = ConfigDict(from_attributes=True)
 
-    id: int
-    hashed_password: str
-    created_at: datetime
-    updated_at: datetime
-    last_login: datetime | None = None
-    status: str
-
-
-class UserCreate(UserBase):
-    password: str
+#     id: int
+#     hashed_password: str
+#     created_at: datetime
+#     updated_at: datetime
+#     last_login: datetime | None = None
+#     status: str
 
 
-class UserLogin(BaseModel):
-    email: EmailStr
-    password: str
+# class UserCreate(UserBase):
+#     password: str
 
 
-class UserUpdate(BaseModel):
-    username: str | None = None
-    email: str | None = None
+# class UserLogin(BaseModel):
+#     email: EmailStr
+#     password: str
 
 
-class UserPasswordUpdate(BaseModel):
-    current_password: str
-    new_password: str
+# class UserUpdate(BaseModel):
+#     username: str | None = None
+#     email: str | None = None
 
 
-class UserDelete(UserLogin):
-    pass
+# class UserPasswordUpdate(BaseModel):
+#     current_password: str
+#     new_password: str
 
 
-class UserResponse(BaseModel):
-    id: int
-    email: EmailStr
-    created_at: datetime
-    updated_at: datetime
-    last_login: datetime | None = None
-    status: str
+# class UserDelete(UserLogin):
+#     pass
 
 
-class UserLoginResponse(BaseModel):
-    user: UserResponse
-    access_token: str
-    token_type: str = "bearer"
+# class UserResponse(BaseModel):
+#     id: int
+#     email: EmailStr
+#     created_at: datetime
+#     updated_at: datetime
+#     last_login: datetime | None = None
+#     status: str
+
+
+# class UserLoginResponse(BaseModel):
+#     user: UserResponse
+#     access_token: str
+#     token_type: str = "bearer"
