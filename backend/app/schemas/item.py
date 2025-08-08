@@ -12,13 +12,10 @@ class BoundingBox(BaseModel):
 class ItemInTable(BaseModel):
     model_config = ConfigDict(from_attributes=True, extra="forbid")
 
-    id: int
+    item_id: int
     image_id: int
     name: str
-    x_center: int = Field(ge=0)
-    y_center: int = Field(ge=0)
-    width: int = Field(ge=0)
-    height: int = Field(ge=0)
+    bounding_box: BoundingBox
     analysis: str
     created_at: datetime
 
@@ -31,7 +28,7 @@ class ItemCreate(BaseModel):
 
 
 class ItemDelete(BaseModel):
-    item_id: str
+    item_id: int
 
 
 class ItemBulkCreate(BaseModel):
@@ -40,7 +37,7 @@ class ItemBulkCreate(BaseModel):
 
 
 class ItemResponse(BaseModel):
-    item_id: str
+    item_id: int
     image_id: int
     name: str
     bounding_box: BoundingBox

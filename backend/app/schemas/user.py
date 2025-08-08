@@ -13,7 +13,7 @@ class UserInTable(UserBase):
     hashed_password: str
     created_at: datetime
     updated_at: datetime
-    last_login: datetime
+    last_login: datetime | None = None
     status: str
 
 

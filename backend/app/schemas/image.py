@@ -13,12 +13,12 @@ class ImageBase(BaseModel):
 
 
 class ImageInTable(ImageBase):
-    model_config = ConfigDict(from_attributes=True, extra="forbid")
+    model_config = ConfigDict(from_attributes=True)
 
-    id: int
+    image_id: int
     is_analysis_complete: bool | None = None
     score: int | None = Field(default=None, ge=0, le=100)
-    analysis: str
+    analysis: str | None = None
 
 
 class ImageCreate(ImageBase):
