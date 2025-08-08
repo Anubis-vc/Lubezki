@@ -1,44 +1,77 @@
-from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
+import contextlib
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    create_async_engine,
+    async_sessionmaker,
+    AsyncConnection,
+)
 from sqlalchemy.orm import DeclarativeBase
-from sqlmodel import SQLModel
+from sqlalchemy.types import JSON
+from typing import Any, AsyncIterator
+
 from app.core.config import settings
-
-# TODO: return and review this async implementation of everything
-# Create async engine
-engine = create_async_engine(
-    settings.DB_CXN_STRING,
-    echo=True,  # Set to False in production
-    future=True
-)
-
-# Create async session factory
-AsyncSessionLocal = async_sessionmaker(
-    engine,
-    class_=AsyncSession,
-    expire_on_commit=False
-)
 
 
 class Base(DeclarativeBase):
-    pass
+    __mapper_args__ = {"eager_defaults": True}
+    type_annotation_map = {dict[str, Any]: JSON}
 
 
-async def get_db() -> AsyncSession:
-    """Dependency to get database session"""
-    async with AsyncSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.close()
+class DatabaseSessionManager:
+    def __init__(self, host: str, engine_kwargs: dict[str, Any]):
+        self._engine = create_async_engine(host, **engine_kwargs)
+        self._sessionmaker = async_sessionmaker(
+            autocommit=False, bind=self._engine, expire_on_commit=False
+        )
+
+    @contextlib.asynccontextmanager
+    async def connect(self) -> AsyncIterator[AsyncConnection]:
+        if not self._engine:
+            raise Exception("DatabaseSessionManager not initialized")
+
+        async with self._engine.begin() as conn:
+            try:
+                yield conn
+            except Exception:
+                await conn.rollback()
+                raise
+
+    @contextlib.asynccontextmanager
+    async def session(self) -> AsyncIterator[AsyncSession]:
+        if not self._sessionmaker:
+            raise Exception("DatabaseSessionManager is not initialized")
+
+        async with self._sessionmaker() as session:
+            try:
+                yield session
+            except Exception:
+                await session.rollback()
+                raise
+
+    async def close(self):
+        if not self._engine:
+            raise Exception("DatabaseSessionManager not initialized")
+
+        await self._engine.dispose()
+        self._engine = None
+        self._sessionmaker = None
 
 
-async def create_db_and_tables():
-    """Create database tables"""
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.create_all)
+session_manager = DatabaseSessionManager(
+    settings.DB_CXN_STRING, {"echo": settings.echo_sql}
+)
 
 
-async def drop_db_and_tables():
-    """Drop database tables (use with caution!)"""
-    async with engine.begin() as conn:
-        await conn.run_sync(SQLModel.metadata.drop_all)
+# TODO: may have to update this like this, don't know tradeoff yet
+# async def get_db():
+#     async with session_manager.session() as session:
+#         try:
+#             yield session
+#             await session.commit()
+#         except Exception:
+#             if session.in_transaction():
+#                 await session.rollback()
+#             raise
+async def get_db():
+    async with session_manager.session() as session:
+        yield session

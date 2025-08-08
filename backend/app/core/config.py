@@ -1,5 +1,4 @@
 from pydantic_settings import BaseSettings
-from pydantic import PostgresDsn
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -13,7 +12,7 @@ class Settings(BaseSettings):
     BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:8000"]
 
     # Database
-    DB_CXN_STRING: PostgresDsn | None = None
+    DB_CXN_STRING: str = "missing"
 
     # Google Gemini
     GEMINI_API_KEY: str | None = None
@@ -22,6 +21,12 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "uploads"
     MAX_FILE_SIZE: int = 20 * 1024 * 1024  # 20MB
     ALLOWED_EXTENSIONS: list[str] = [".jpg", ".jpeg", ".png", ".raw"]
+
+    env: str = "dev"
+    echo_sql: bool = False
+
+    def model_post_init(self, __context):
+        self.echo_sql = self.env == "dev"
 
 
 settings = Settings()
