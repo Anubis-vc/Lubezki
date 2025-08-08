@@ -27,8 +27,8 @@ class ImageCreate(ImageBase):
 
 class ImageUpdate(BaseModel):
     is_analysis_complete: bool | None = None
-    score: bool | None = Field(default=None, ge=0, le=100)
-    analysis: str
+    score: int | None = Field(default=None, ge=0, le=100)
+    analysis: str | None = None
 
 
 class ImageResponse(BaseModel):
