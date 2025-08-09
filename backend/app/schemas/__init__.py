@@ -2,9 +2,12 @@ from .image import (
     ImageBase,
     ImageInTable,
     ImageCreate,
-    ImageUpdate,
+    ImageCreateURLResponse,
+    ImageAnalysisUpdate,
+    ImageUploadUpdate,
     ImageResponse,
     ImageListResponse,
+    ImageDeleteResponse,
 )
 
 # from .user import (
@@ -32,9 +35,12 @@ __all__ = [
     "ImageBase",
     "ImageInTable",
     "ImageCreate",
-    "ImageUpdate",
+    "ImageCreateURLResponse",
+    "ImageAnalysisUpdate",
+    "ImageUploadUpdate",
     "ImageResponse",
     "ImageListResponse",
+    "ImageDeleteResponse",
     # User schemas
     # "UserBase",
     # "UserInTable",
@@ -49,7 +55,6 @@ __all__ = [
     "BoundingBox",
     "ItemInTable",
     "ItemCreate",
-    "ItemDelete",
     "ItemBulkCreate",
     "ItemResponse",
     "ItemListResponse",

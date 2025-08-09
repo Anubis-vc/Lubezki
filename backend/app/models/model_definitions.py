@@ -44,6 +44,7 @@ class Images(Base):
     is_analysis_complete: Mapped[bool | None] = mapped_column(default=False)
     score: Mapped[int | None] = mapped_column(default=None)  # 0-100 score
     analysis: Mapped[str | None] = mapped_column(Text, default=None)
+    status: Mapped[str] = mapped_column(String(20), default="uploading")
     # as a reminder, this is just python sugar for the foreign key relationship, does not create a column in the database
     # user: Mapped["Users"] = relationship("Users", back_populates="images")
     items: Mapped[list["Items"]] = relationship(

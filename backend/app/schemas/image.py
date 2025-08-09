@@ -1,6 +1,6 @@
 from pydantic import BaseModel, ConfigDict, Field
 from datetime import datetime
-from typing import Sequence
+from typing import Sequence, Any
 import uuid
 
 
@@ -18,6 +18,7 @@ class ImageBase(BaseModel):
     is_analysis_complete: bool = False
     score: int | None = Field(default=None, ge=0, le=100)
     analysis: str | None = None
+    status: str = "pending"
 
 
 class ImageInTable(ImageBase):
@@ -32,20 +33,43 @@ class ImageCreate(ImageBase):
     user_id: uuid.UUID
 
 
-class ImageUpdate(BaseModel):
+class ImageCreateURLResponse(BaseModel):
+    presigned_url: dict[str, Any]
+
+
+class ImageAnalysisUpdate(BaseModel):
     image_id: int
-    is_analysis_complete: bool = False
-    score: int | None = None
-    analysis: str | None = None
+    is_analysis_complete: bool
+    score: int
+    analysis: str
     updated_at: datetime = datetime.now()
 
 
-class ImageResponse(ImageBase):
+class ImageUploadUpdate(BaseModel):
     image_id: int
+    status: str
+
+
+class ImageResponse(BaseModel):
+    original_name: str
+    size_bytes: int
+    mime_type: str
+    width_px: int
+    height_px: int
+    is_analysis_complete: bool = False
+    score: int | None = Field(default=None, ge=0, le=100)
+    analysis: str | None = None
+    download_url: str
 
 
 class ImageListResponse(BaseModel):
     images: Sequence[ImageResponse]
+    urls: list[str]
     total: int
-    limit: int
-    offset: int
+    cursor: datetime
+
+
+class ImageDeleteResponse(BaseModel):
+    message: str
+    s3_deleted: bool
+    db_deleted: bool

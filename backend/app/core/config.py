@@ -18,14 +18,13 @@ class Settings(BaseSettings):
     GEMINI_API_KEY: str | None = None
 
     # File upload settings
-    UPLOAD_DIR: str = "uploads"
     MAX_FILE_SIZE: int = 20 * 1024 * 1024  # 20MB
     ALLOWED_EXTENSIONS: list[str] = [".jpg", ".jpeg", ".png", ".raw"]
 
     env: str = "dev"
     echo_sql: bool = False
     log_level: str = "DEBUG"  # TODO: change to INFO in production
-    
+
     AWS_BUCKET_NAME: str = "dev"
 
     def model_post_init(self, __context):
