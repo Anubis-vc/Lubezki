@@ -25,6 +25,8 @@ class Settings(BaseSettings):
     env: str = "dev"
     echo_sql: bool = False
     log_level: str = "DEBUG"  # TODO: change to INFO in production
+    
+    AWS_BUCKET_NAME: str = "dev"
 
     def model_post_init(self, __context):
         self.echo_sql = self.env == "dev"
