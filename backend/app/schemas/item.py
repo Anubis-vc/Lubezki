@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field, ConfigDict
 from datetime import datetime
 from typing import Sequence
+import uuid
 
 
 class BoundingBox(BaseModel):
@@ -11,9 +12,9 @@ class BoundingBox(BaseModel):
 
 
 class ItemInTable(BaseModel):
-    model_config = ConfigDict(from_attributes=True, extra="forbid")
+    model_config = ConfigDict(from_attributes=True)
 
-    item_id: int
+    item_id: uuid.UUID
     image_id: int
     name: str
     bounding_box: BoundingBox
@@ -35,7 +36,7 @@ class ItemBulkCreate(BaseModel):
 
 
 class ItemResponse(BaseModel):
-    item_id: int
+    item_id: uuid.UUID
     image_id: int
     name: str
     bounding_box: BoundingBox
@@ -44,4 +45,4 @@ class ItemResponse(BaseModel):
 
 class ItemListResponse(BaseModel):
     items: Sequence[ItemResponse]
-    total_count: int
+    total: int

@@ -9,7 +9,7 @@ from .images import (
 )
 from .items import (
     create_item,
-    get_item_by_id,
+    get_item,
     get_items_for_image,
 )
 
@@ -31,7 +31,7 @@ __all__ = [
     "delete_image_db",
     # Item database operations
     "create_item",
-    "get_item_by_id",
+    "get_item",
     "get_items_for_image",
     # S3 bucket operations
     "get_upload_url",

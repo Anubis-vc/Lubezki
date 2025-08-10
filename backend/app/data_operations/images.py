@@ -1,6 +1,6 @@
+import logging
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi.exceptions import HTTPException
-from sqlalchemy import select, func
+from sqlalchemy import select
 from typing import Sequence
 import uuid
 from datetime import datetime
@@ -8,13 +8,15 @@ from datetime import datetime
 from app.models.model_definitions import Images
 from app.schemas.image import ImageCreate, ImageAnalysisUpdate, ImageUploadUpdate
 
+logger = logging.getLogger(__name__)
+
 
 async def get_image_by_id(session: AsyncSession, image_id: int) -> Images | None:
     """Get image by ID"""
+    logger.debug(f"Fetching image with ID: {image_id}")
     return await session.get(Images, image_id)
 
 
-# TODO: two, queries, possible to do in one?
 async def get_images_for_user(
     session: AsyncSession,
     user_id: uuid.UUID,
@@ -22,15 +24,10 @@ async def get_images_for_user(
     limit: int = 50,
 ) -> tuple[Sequence[Images], int, datetime]:
     """Get images with pagination"""
-    total_stmt = (
-        select(func.count()).select_from(Images).where(Images.user_id == user_id)
+    logger.debug(
+        f"Fetching images for user {user_id}, limit: {limit}, cursor: {cursor}"
     )
-    total = await session.scalar(total_stmt) or 0
 
-    if total == 0:
-        raise HTTPException(status_code=404, detail="No images found for user")
-
-    # get results
     data_stmt = (
         select(Images)
         .where(Images.user_id == user_id)
@@ -41,19 +38,26 @@ async def get_images_for_user(
     data_stmt = data_stmt.limit(limit)
 
     images = (await session.scalars(data_stmt)).all()
+    count = len(images)
 
     if images:
-        return images, total, images[-1].created_at
+        last_cursor = images[-1].created_at
+        logger.info(f"Retrieved {count} images for user {user_id}")
+        return images, count, last_cursor
     else:
-        return images, total, datetime.now()
+        logger.info(f"No images found for user {user_id}")
+        return images, 0, datetime.now()
 
 
-async def create_image(session: AsyncSession, image_data: ImageCreate) -> Images:
+async def create_image(session: AsyncSession, image_data: ImageCreate) -> Images | None:
     """Create a new image record"""
+    logger.info(f"Creating new image for user {image_data.user_id}")
+
     db_image = Images(**image_data.model_dump())
     session.add(db_image)
     await session.commit()
     await session.refresh(db_image)
+    logger.info(f"Successfully created image with ID: {db_image.image_id}")
     return db_image
 
 
@@ -61,43 +65,51 @@ async def update_image_analysis(
     session: AsyncSession, image_id: int, image_update: ImageAnalysisUpdate
 ) -> Images | None:
     """Update image with analysis results"""
-    # Get the image first
+    logger.info(f"Updating analysis for image {image_id}")
+
     image = await get_image_by_id(session, image_id)
     if not image:
+        logger.warning(f"Image {image_id} not found for analysis update")
         return None
 
-    # Update fields
     image.analysis = image_update.analysis
     image.score = image_update.score
     image.is_analysis_complete = image_update.is_analysis_complete
 
     await session.commit()
     await session.refresh(image)
+    logger.info(f"Successfully updated analysis for image {image_id}")
     return image
 
 
-# TODO: may have to add this to a background task to kick off analaysis
 async def update_image_upload(
     session: AsyncSession, image_id: int, image_update: ImageUploadUpdate
 ) -> Images | None:
     """Update image with upload status"""
+    logger.info(f"Updating upload status for image {image_id} to {image_update.status}")
+
     image = await get_image_by_id(session, image_id)
     if not image:
+        logger.warning(f"Image {image_id} not found for upload update")
         return None
 
     image.status = image_update.status
     await session.commit()
     await session.refresh(image)
+    logger.info(f"Successfully updated upload status for image {image_id}")
     return image
 
 
 async def delete_image(session: AsyncSession, image_id: int) -> bool:
     """Delete image by ID"""
+    logger.info(f"Deleting image {image_id}")
+
     image = await get_image_by_id(session, image_id)
     if not image:
+        logger.warning(f"Image {image_id} not found for deletion")
         return False
 
-    # Delete from database
     await session.delete(image)
     await session.commit()
+    logger.info(f"Successfully deleted image {image_id}")
     return True

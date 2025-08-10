@@ -4,7 +4,6 @@ from typing import Sequence, Any
 import uuid
 
 
-# TODO: add validation for mime types
 class ImageBase(BaseModel):
     created_at: datetime
     original_name: str
