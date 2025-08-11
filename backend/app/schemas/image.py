@@ -23,7 +23,7 @@ class ImageBase(BaseModel):
 class ImageInTable(ImageBase):
     model_config = ConfigDict(from_attributes=True)
 
-    image_id: int
+    image_id: uuid.UUID
     user_id: uuid.UUID
     storage_path: str
 
@@ -37,7 +37,7 @@ class ImageCreateURLResponse(BaseModel):
 
 
 class ImageAnalysisUpdate(BaseModel):
-    image_id: int
+    image_id: uuid.UUID
     is_analysis_complete: bool
     score: int
     analysis: str
@@ -45,7 +45,7 @@ class ImageAnalysisUpdate(BaseModel):
 
 
 class ImageUploadUpdate(BaseModel):
-    image_id: int
+    image_id: uuid.UUID
     status: str
 
 

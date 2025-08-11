@@ -15,7 +15,7 @@ class ItemInTable(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     item_id: uuid.UUID
-    image_id: int
+    image_id: uuid.UUID
     name: str
     bounding_box: BoundingBox
     analysis: str
@@ -23,7 +23,7 @@ class ItemInTable(BaseModel):
 
 
 class ItemCreate(BaseModel):
-    image_id: int
+    image_id: uuid.UUID
     name: str
     bounding_box: BoundingBox
     analysis: str
@@ -31,13 +31,13 @@ class ItemCreate(BaseModel):
 
 
 class ItemBulkCreate(BaseModel):
-    image_id: int
+    image_id: uuid.UUID
     items: Sequence[ItemCreate]
 
 
 class ItemResponse(BaseModel):
     item_id: uuid.UUID
-    image_id: int
+    image_id: uuid.UUID
     name: str
     bounding_box: BoundingBox
     analysis: str

@@ -8,8 +8,16 @@ class Settings(BaseSettings):
     API_STR: str = "/api/v1"
     PROJECT_NAME: str = "Lubezki"
 
+    # TODO: make this good
     # CORS
-    BACKEND_CORS_ORIGINS: list[str] = ["http://localhost:3000", "http://localhost:8000"]
+    BACKEND_CORS_ORIGINS: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:8000",
+        "http://127.0.0.1:3000",
+        "http://127.0.0.1:5173",
+        "http://127.0.0.1:8000",
+    ]
 
     # Database
     DB_CXN_STRING: str = "missing"
@@ -26,6 +34,8 @@ class Settings(BaseSettings):
     log_level: str = "DEBUG"  # TODO: change to INFO in production
 
     AWS_BUCKET_NAME: str = "dev"
+
+    PUBLIC_AUTH_KEY: str = "missing"
 
     def model_post_init(self, __context):
         self.echo_sql = self.env == "dev"

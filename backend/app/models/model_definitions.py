@@ -1,5 +1,5 @@
 from typing import Annotated, Any
-from sqlalchemy import String, Text, ForeignKey, BigInteger
+from sqlalchemy import String, Text, ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -10,14 +10,15 @@ from app.core.database_async import Base
 timestamp = Annotated[
     datetime, mapped_column(nullable=False, server_default=func.current_timestamp())
 ]
-int_pk = Annotated[int, mapped_column(BigInteger, primary_key=True)]
 
 
 class Items(Base):
     __tablename__ = "items"
 
     item_id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True)
-    image_id: Mapped[int] = mapped_column(ForeignKey("images.image_id"), index=True)
+    image_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey("images.image_id"), index=True
+    )
     name: Mapped[str] = mapped_column(String(255))
     bounding_box: Mapped[
         dict[str, Any]
@@ -31,7 +32,7 @@ class Items(Base):
 class Images(Base):
     __tablename__ = "images"
 
-    image_id: Mapped[int_pk]
+    image_id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True)
     user_id: Mapped[uuid.UUID] = mapped_column(index=True)
     created_at: Mapped[timestamp]
     original_name: Mapped[str] = mapped_column(String(255))

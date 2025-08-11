@@ -16,11 +16,13 @@ from app.core.config import settings
 
 logger = logging.getLogger(__name__)
 
+
 class Base(DeclarativeBase):
     __mapper_args__ = {"eager_defaults": True}
     type_annotation_map = {
         dict[str, Any]: JSON,
     }
+
 
 # lots of help from https://github.com/ThomasAitken/demo-fastapi-async-sqlalchemy/blob/main/backend/app/api/dependencies/core.py
 class DatabaseSessionManager:
@@ -31,7 +33,7 @@ class DatabaseSessionManager:
             poolclass=NullPool,
             connect_args={
                 "prepared_statement_name_func": lambda: f"__asyncpg_{uuid4()}__",
-                },
+            },
         )
         self._sessionmaker = async_sessionmaker(
             bind=self._engine,

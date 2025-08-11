@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, HTTPException, status, UploadFile
+from fastapi import APIRouter, HTTPException, status, UploadFile, Form
 import uuid
 from datetime import datetime
 
@@ -80,7 +80,9 @@ async def get_download_url(image_id: int, db: SessionDep):
 
 
 @router.get("/gallery/{user_id}", response_model=ImageListResponse)
-async def get_gallery(user_id: uuid.UUID, db: SessionDep, cursor: datetime | None=None):
+async def get_gallery(
+    user_id: uuid.UUID, db: SessionDep, cursor: datetime | None = None
+):
     """Get a users gallery of images with pagination"""
     logger.info(f"Fetching gallery for user {user_id}, cursor: {cursor}")
 
@@ -100,11 +102,16 @@ async def get_gallery(user_id: uuid.UUID, db: SessionDep, cursor: datetime | Non
 
 
 ########## POST REQUESTS ##########
+# TODO: edit this to not take in the image, we'll send it to s3 directly
 @router.post(
     "/", response_model=ImageCreateURLResponse, status_code=status.HTTP_201_CREATED
 )
 async def create_image_record(
-    user_id: uuid.UUID, file: UploadFile, width: int, height: int, db: SessionDep
+    db: SessionDep,
+    user_id: uuid.UUID = Form(...),
+    file: UploadFile = Form(...),
+    width: int = Form(...),
+    height: int = Form(...),
 ):
     """Create a database record after successful S3 upload"""
     logger.info(f"Creating image record for user {user_id}, file: {file.filename}")
