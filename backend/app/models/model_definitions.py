@@ -24,6 +24,7 @@ class Items(Base):
     ]  # Store as JSON: {"center_x": int, "center_y": int, "height": int, "width": int}
     analysis: Mapped[str] = mapped_column(Text)
     created_at: Mapped[timestamp]
+    # as a reminder, this is just python sugar for the foreign key relationship, does not create a column in the database
     image: Mapped["Images"] = relationship("Images", back_populates="items")
 
 
@@ -45,23 +46,6 @@ class Images(Base):
     score: Mapped[int | None] = mapped_column(default=None)  # 0-100 score
     analysis: Mapped[str | None] = mapped_column(Text, default=None)
     status: Mapped[str] = mapped_column(String(20), default="uploading")
-    # as a reminder, this is just python sugar for the foreign key relationship, does not create a column in the database
-    # user: Mapped["Users"] = relationship("Users", back_populates="images")
     items: Mapped[list["Items"]] = relationship(
         "Items", back_populates="image", cascade="all, delete-orphan"
     )
-
-
-# TODO: commenting out for now, will need to figure out how to handle users
-
-# class Users(Base):
-#     __tablename__ = "users"
-
-#     id: Mapped[int_pk]
-#     email: Mapped[str] = mapped_column(String(255), unique=True, index=True)
-#     hashed_password: Mapped[str] = mapped_column(String(255))
-#     created_at: Mapped[timestamp]
-#     updated_at: Mapped[timestamp]
-#     last_login: Mapped[datetime | None]
-#     status: Mapped[str] = mapped_column(String(20), default="active")
-#     images: Mapped[list[Images]] = relationship("Images", back_populates="user", cascade="all, delete-orphan")

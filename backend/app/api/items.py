@@ -6,12 +6,12 @@ from app.api.deps import SessionDep
 from app.data_operations import get_item, get_items_for_image
 from app.schemas.item import ItemResponse, ItemListResponse
 
-router = APIRouter(prefix="/item")
+router = APIRouter(prefix="/items")
 logger = logging.getLogger(__name__)
 
 
 @router.get("/{item_id}/", response_model=ItemResponse)
-async def get_item_by_id(db: SessionDep, item_id: uuid.UUID):
+async def get_item_by_id(item_id: uuid.UUID, db: SessionDep):
     """Get an item by its ID"""
 
     try:
@@ -30,7 +30,7 @@ async def get_item_by_id(db: SessionDep, item_id: uuid.UUID):
 
 
 @router.get("/image/{image_id}/", response_model=ItemListResponse)
-async def get_items_by_image_id(db: SessionDep, image_id: int):
+async def get_items_by_image_id(image_id: int, db: SessionDep):
     """Get all items for a specific image"""
 
     try:

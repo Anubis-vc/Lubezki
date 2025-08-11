@@ -5,7 +5,7 @@ load_dotenv()
 
 
 class Settings(BaseSettings):
-    API_STR: str = "/api/v1/"
+    API_STR: str = "/api/v1"
     PROJECT_NAME: str = "Lubezki"
 
     # CORS

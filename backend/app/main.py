@@ -3,6 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
 import logging
 from contextlib import asynccontextmanager
+import asyncio
 
 from app.api import api_router
 from app.core.config import settings
@@ -21,11 +22,11 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Check if database connection exists at startup
     try:
-        async with session_manager.session() as session:
-            await session.execute(text("SELECT 1"))
-        logger.info("Database connection established")
+        if await session_manager.health_check():
+            logger.info("Database connection established")
+        else:
+            logger.error("Database health check failed")
     except Exception as e:
         logger.error(f"Database connection failed: {e}")
         raise
@@ -34,9 +35,9 @@ async def lifespan(app: FastAPI):
 
     try:
         await session_manager.close()
-        logger.info("Database connections closed")
+        logger.info("Database connection closed")
     except Exception as e:
-        logger.error(f"Error closing database connections: {e}")
+        logger.error(f"Error closing database connection: {e}")
 
 
 app = FastAPI(

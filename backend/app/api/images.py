@@ -29,7 +29,7 @@ from app.data_operations import (
 )
 from app.core.config import settings
 
-router = APIRouter(prefix="/image")
+router = APIRouter(prefix="/images")
 logger = logging.getLogger(__name__)
 # gemini_service = GeminiService()
 
@@ -37,7 +37,7 @@ logger = logging.getLogger(__name__)
 
 
 ########## GET REQUESTS ##########
-@router.get("/{image_id}/", response_model=ImageResponse)
+@router.get("/{image_id}", response_model=ImageResponse)
 async def get_download_url(image_id: int, db: SessionDep):
     """Get a presigned URL to view the image and get its metadata"""
     logger.info(f"Fetching download URL for image {image_id}")
@@ -79,8 +79,8 @@ async def get_download_url(image_id: int, db: SessionDep):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/gallery/{user_id}/", response_model=ImageListResponse)
-async def get_gallery(db: SessionDep, user_id: uuid.UUID, cursor: datetime | None):
+@router.get("/gallery/{user_id}", response_model=ImageListResponse)
+async def get_gallery(user_id: uuid.UUID, db: SessionDep, cursor: datetime | None=None):
     """Get a users gallery of images with pagination"""
     logger.info(f"Fetching gallery for user {user_id}, cursor: {cursor}")
 
@@ -100,12 +100,11 @@ async def get_gallery(db: SessionDep, user_id: uuid.UUID, cursor: datetime | Non
 
 
 ########## POST REQUESTS ##########
-# TODO: make sure that the client is sending the height and width
 @router.post(
     "/", response_model=ImageCreateURLResponse, status_code=status.HTTP_201_CREATED
 )
 async def create_image_record(
-    db: SessionDep, user_id: uuid.UUID, file: UploadFile, width: int, height: int
+    user_id: uuid.UUID, file: UploadFile, width: int, height: int, db: SessionDep
 ):
     """Create a database record after successful S3 upload"""
     logger.info(f"Creating image record for user {user_id}, file: {file.filename}")
@@ -122,9 +121,6 @@ async def create_image_record(
         presigned_url, key = await get_upload_url(
             file.filename if file.filename else "unknown"
         )
-        if not presigned_url or not key:
-            logger.error(f"Failed to generate upload URL for user {user_id}")
-            raise HTTPException(status_code=500, detail="Failed to generate upload URL")
 
         data = ImageCreate(
             user_id=user_id,
@@ -169,7 +165,7 @@ async def create_image_record(
 # TODO: add listener for s3 events to update the image record with status
 @router.patch("/update/analysis/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def update_image_analysis(
-    db: SessionDep, image_id: int, analysis: ImageAnalysisUpdate
+    image_id: int, analysis: ImageAnalysisUpdate, db: SessionDep
 ):
     """Update the analysis of an image"""
     logger.info(f"Updating analysis for image {image_id}")
@@ -194,7 +190,7 @@ async def update_image_analysis(
 
 
 @router.patch("/update/upload/{image_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def update_image_upload(db: SessionDep, image_id: int, upload: ImageUploadUpdate):
+async def update_image_upload(image_id: int, upload: ImageUploadUpdate, db: SessionDep):
     """Update the upload status of an image"""
     logger.info(f"Updating upload status for image {image_id} to {upload.status}")
 
