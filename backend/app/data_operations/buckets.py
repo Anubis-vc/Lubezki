@@ -27,7 +27,9 @@ async def get_upload_url(
         Bucket=settings.AWS_BUCKET_NAME,
         Key=key,
         ExpiresIn=600,
-        Conditions=["content-length-range", 0, settings.MAX_FILE_SIZE],
+        Conditions=[
+            ["content-length-range", 0, settings.MAX_FILE_SIZE]
+        ],
     )
     logger.info(f"Successfully generated upload URL for key: {key}")
     return presigned_url, key

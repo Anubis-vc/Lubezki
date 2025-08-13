@@ -1,9 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy import text
 import logging
 from contextlib import asynccontextmanager
-import asyncio
 
 from app.api import api_router
 from app.core.config import settings
@@ -12,10 +10,8 @@ from app.core.logging_config import setup_logging
 
 
 # Set up logging based on environment
-if settings.log_level == "DEBUG":
-    setup_logging(log_level="DEBUG")
-else:
-    setup_logging(log_level="INFO")
+
+setup_logging(log_level="INFO")
 
 logger = logging.getLogger(__name__)
 
@@ -53,8 +49,20 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.BACKEND_CORS_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
+    allow_headers=[
+        "Accept",
+        "Accept-Language",
+        "Content-Language",
+        "Content-Type",
+        "Authorization",
+        "X-Requested-With",
+        "Origin",
+        "Access-Control-Request-Method",
+        "Access-Control-Request-Headers",
+    ],
+    expose_headers=["Content-Length", "Content-Range"],
+    max_age=86400,  # Cache preflight for 24 hours
 )
 
 # Include API router

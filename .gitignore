@@ -206,3 +206,4 @@ __marimo__/
 *.example
 setup.sh
 *development*
+*prompt.py

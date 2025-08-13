@@ -34,6 +34,7 @@ class ImageCreate(ImageBase):
 
 class ImageCreateURLResponse(BaseModel):
     presigned_url: dict[str, Any]
+    message: str
 
 
 class ImageAnalysisUpdate(BaseModel):

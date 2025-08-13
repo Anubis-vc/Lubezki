@@ -1,5 +1,5 @@
 import logging
-from fastapi import APIRouter, HTTPException, status, UploadFile, Form
+from fastapi import APIRouter, HTTPException, status, Form
 import uuid
 from datetime import datetime
 
@@ -103,40 +103,34 @@ async def get_gallery(
 
 ########## POST REQUESTS ##########
 # TODO: edit this to not take in the image, we'll send it to s3 directly
+# TODO: check the file type with magic bytes on the backend
+# TODO: better to bring from body instead of form since we're not sending a file
 @router.post(
     "/", response_model=ImageCreateURLResponse, status_code=status.HTTP_201_CREATED
 )
 async def create_image_record(
     db: SessionDep,
     user_id: uuid.UUID = Form(...),
-    file: UploadFile = Form(...),
+    filename: str = Form(...),
+    file_type: str = Form(...),
+    file_size: int = Form(...),
     width: int = Form(...),
     height: int = Form(...),
 ):
     """Create a database record after successful S3 upload"""
-    logger.info(f"Creating image record for user {user_id}, file: {file.filename}")
+    logger.info(f"Creating image record for user {user_id}, file: {filename}")
 
     try:
-        if not file.content_type or not file.content_type.startswith("image/"):
-            logger.warning(f"Invalid file type for user {user_id}: {file.content_type}")
-            raise HTTPException(status_code=400, detail="File must be an image")
-
-        if not file.size or file.size > settings.MAX_FILE_SIZE:
-            logger.warning(f"Invalid file size for user {user_id}: {file.size}")
-            raise HTTPException(status_code=400, detail="File size is invalid")
-
-        presigned_url, key = await get_upload_url(
-            file.filename if file.filename else "unknown"
-        )
+        presigned_url, key = await get_upload_url(filename)
 
         data = ImageCreate(
             user_id=user_id,
             created_at=datetime.now(),
-            original_name=file.filename,
+            original_name=filename,
             bucket=settings.AWS_BUCKET_NAME,
             storage_path=key,
-            size_bytes=file.size,
-            mime_type=file.content_type,
+            size_bytes=file_size,
+            mime_type=file_type,
             width_px=width,
             height_px=height,
             updated_at=datetime.now(),
