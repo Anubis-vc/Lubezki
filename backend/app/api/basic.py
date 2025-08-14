@@ -52,27 +52,28 @@ async def upload_image(file: UploadFile) -> dict[str, Any]:
     except Exception as e:
         logger.error(f"Error uploading file: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error")
-    
+
+
 @router.post("/upload-for-gallery")
 async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]:
     if file.content_type and file.content_type != "image/jpeg":
         raise HTTPException(status_code=400, detail="Invalid file type")
-    
+
     if file.size and file.size > 25 * 1024 * 1024:
         raise HTTPException(status_code=400, detail="File too large")
-    
+
     try:
         pil_image = Image.open(io.BytesIO(file.file.read()))
-        width, height = pil_image.size # get original before thumbnailing later
+        width, height = pil_image.size  # get original before thumbnailing later
         thumbnail_image = pil_image.resize((500, 500))
-        
+
         # upload the files to s3
         key = await upload_file(pil_image)
         thumbnail_key = await upload_file(thumbnail_image)
-        
+
         gemini_response = gemini_service.analyze_image(pil_image)
         image_id = uuid.uuid4()
-        
+
         # add image to db
         image_data = ImageInTable(
             image_id=image_id,
@@ -90,34 +91,33 @@ async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]
             updated_at=datetime.now(),
             is_analysis_complete=True,
             score=gemini_response["scores"],
-            status="complete"
+            status="complete",
         )
         db_response = await create_image(db, image_data)
         if not db_response:
             raise HTTPException(status_code=500, detail="Failed to create image")
-        
+
         # add item to db
         for item in gemini_response["objects"]:
             item_data = ItemCreate(
-				image_id=image_id,
-				name=item["name"],
-				bounding_box=BoundingBox(
-					center_x=item["bounding_box"]["x"],
-					center_y=item["bounding_box"]["y"],
-					height=item["bounding_box"]["width"],
-					width=item["bounding_box"]["height"]
-				),
-				analysis=item["analysis"],
-				created_at=datetime.now()
-			)
+                image_id=image_id,
+                name=item["name"],
+                bounding_box=BoundingBox(
+                    center_x=item["bounding_box"]["x"],
+                    center_y=item["bounding_box"]["y"],
+                    height=item["bounding_box"]["width"],
+                    width=item["bounding_box"]["height"],
+                ),
+                analysis=item["analysis"],
+                created_at=datetime.now(),
+            )
             await create_item(db, item_data)
 
         return {"message": "Image uploaded successfully"}
-        
+
     except Exception as e:
         logger.error(f"Error uploading file: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error")
-        
 
 
-# 6) Make a script that can do this for every file in the directory
+# TODO: Make a script that can do this for every file in the directory and populate gallery

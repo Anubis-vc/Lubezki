@@ -16,7 +16,6 @@ class GeminiService:
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
         self.model = "gemini-2.0-flash"
 
-
     def analyze_image(self, image: bytes | Image.Image) -> Dict[str, Any]:
         """Analyze an image using Google Gemini API: later will use a local model"""
 
@@ -30,7 +29,9 @@ class GeminiService:
 
         return json.loads(response.text)
 
-    def _resize_image(self, image: bytes | Image.Image, max_size: int = 384) -> Image.Image:
+    def _resize_image(
+        self, image: bytes | Image.Image, max_size: int = 384
+    ) -> Image.Image:
         """Resize image to meet API requirements"""
 
         pil_image: Image.Image

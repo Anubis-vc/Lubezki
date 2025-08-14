@@ -129,7 +129,7 @@ async def create_image_record(
             original_name=filename,
             bucket=settings.AWS_BUCKET_NAME,
             storage_key=key,
-            thumbnail_key=key, # TODO: add thumbnail key
+            thumbnail_key=key,  # TODO: add thumbnail key
             size_bytes=file_size,
             mime_type=file_type,
             width_px=width,

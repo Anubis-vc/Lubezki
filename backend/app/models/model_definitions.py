@@ -45,7 +45,9 @@ class Images(Base):
     height_px: Mapped[int]
     updated_at: Mapped[timestamp]
     is_analysis_complete: Mapped[bool | None] = mapped_column(default=False)
-    score: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)  # JSONB scores for multiple categories
+    score: Mapped[dict[str, Any] | None] = mapped_column(
+        JSON, default=None
+    )  # JSONB scores for multiple categories
     analysis: Mapped[str | None] = mapped_column(Text, default=None)
     status: Mapped[str] = mapped_column(String(20), default="uploading")
     items: Mapped[list["Items"]] = relationship(

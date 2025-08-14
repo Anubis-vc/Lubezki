@@ -6,7 +6,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-async def create_image(session: AsyncSession, image_data: ImageInTable) -> Images | None:
+async def create_image(
+    session: AsyncSession, image_data: ImageInTable
+) -> Images | None:
     """Create a new image record"""
     logger.info(f"Creating new image for user {image_data.user_id}")
 
