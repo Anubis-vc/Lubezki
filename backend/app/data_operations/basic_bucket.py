@@ -5,7 +5,6 @@ from fastapi import UploadFile
 import uuid
 
 from app.core.config import settings
-from app.models.model_definitions import Images
 
 load_dotenv()
 
@@ -47,4 +46,3 @@ async def upload_file(file: UploadFile) -> str:
         ContentType=file.content_type,
     )
     return key
-    

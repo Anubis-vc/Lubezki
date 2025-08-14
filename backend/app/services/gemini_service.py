@@ -41,10 +41,9 @@ class GeminiService:
         """Resize image to meet API requirements"""
         
         image = Image.open(io.BytesIO(image))
-        # width, height = image.size
+        width, height = image.size
 
-        # if width > max_size or height > max_size:
-            # Maintain aspect ratio
-        image.thumbnail((max_size, max_size))
+        if width > max_size or height > max_size:
+            image.thumbnail((max_size, max_size)) # maintain aspect ratio
 
         return image
