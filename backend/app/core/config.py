@@ -34,6 +34,7 @@ class Settings(BaseSettings):
     log_level: str = "DEBUG"  # TODO: change to INFO in production
 
     AWS_BUCKET_NAME: str = "dev"
+    AWS_BASIC_BUCKET_NAME: str = "public-lubezki-images"
 
     PUBLIC_AUTH_KEY: str = "missing"
 
