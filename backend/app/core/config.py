@@ -37,6 +37,8 @@ class Settings(BaseSettings):
     AWS_BASIC_BUCKET_NAME: str = "public-lubezki-images"
 
     PUBLIC_AUTH_KEY: str = "missing"
+    
+    DEFAULT_USER_ID: str = "70321201-896d-4ff5-b5c1-61296c3775ba"
 
     def model_post_init(self, __context):
         self.echo_sql = self.env == "dev"

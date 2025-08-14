@@ -8,14 +8,15 @@ class ImageBase(BaseModel):
     created_at: datetime
     original_name: str
     bucket: str
-    storage_path: str
+    storage_key: str
+    thumbnail_key: str
     size_bytes: int
     mime_type: str
     width_px: int
     height_px: int
     updated_at: datetime
     is_analysis_complete: bool = False
-    score: int | None = Field(default=None, ge=0, le=100)
+    score: dict[str, Any] | None = Field(default=None, description="JSONB scores for multiple categories")
     analysis: str | None = None
     status: str = "pending"
 
@@ -25,8 +26,8 @@ class ImageInTable(ImageBase):
 
     image_id: uuid.UUID
     user_id: uuid.UUID
-    storage_path: str
-
+    storage_key: str
+    thumbnail_key: str
 
 class ImageCreate(ImageBase):
     user_id: uuid.UUID
@@ -40,7 +41,7 @@ class ImageCreateURLResponse(BaseModel):
 class ImageAnalysisUpdate(BaseModel):
     image_id: uuid.UUID
     is_analysis_complete: bool
-    score: int
+    score: dict[str, Any]
     analysis: str
     updated_at: datetime = datetime.now()
 
@@ -57,7 +58,7 @@ class ImageResponse(BaseModel):
     width_px: int
     height_px: int
     is_analysis_complete: bool = False
-    score: int | None = Field(default=None, ge=0, le=100)
+    score: dict[str, Any] | None = Field(default=None, description="JSONB scores for multiple categories")
     analysis: str | None = None
     download_url: str
 

@@ -49,7 +49,7 @@ async def get_download_url(image_id: int, db: SessionDep):
             logger.warning(f"Image {image_id} not found")
             raise HTTPException(status_code=404, detail="Image not found")
 
-        download_url = await get_single_image_url(db_image.storage_path)
+        download_url = await get_single_image_url(db_image.storage_key)
 
         if not download_url:
             logger.error(f"Failed to generate download URL for image {image_id}")
@@ -128,7 +128,8 @@ async def create_image_record(
             created_at=datetime.now(),
             original_name=filename,
             bucket=settings.AWS_BUCKET_NAME,
-            storage_path=key,
+            storage_key=key,
+            thumbnail_key=key, # TODO: add thumbnail key
             size_bytes=file_size,
             mime_type=file_type,
             width_px=width,
@@ -224,7 +225,7 @@ async def delete_image_endpoint(image_id: int, db: SessionDep):
             logger.warning(f"Image {image_id} not found for deletion")
             raise HTTPException(status_code=404, detail="Image not found")
 
-        s3_deleted = await delete_image_s3(db_image.storage_path)
+        s3_deleted = await delete_image_s3(db_image.storage_key)
         db_deleted = await delete_image_db(db, image_id)
 
         if not db_deleted:

@@ -16,34 +16,32 @@ class GeminiService:
         self.client = genai.Client(api_key=settings.GEMINI_API_KEY)
         self.model = "gemini-2.0-flash"
 
-    # TODO: add a function to analyze an image from bytes
 
-    
-    def analyze_image(self, image: bytes) -> Dict[str, Any]:
+    def analyze_image(self, image: bytes | Image.Image) -> Dict[str, Any]:
         """Analyze an image using Google Gemini API: later will use a local model"""
-        
+
         # Resize image for API requirements
         resized_image = self._resize_image(image)
         config = types.GenerateContentConfig(response_mime_type="application/json")
 
         response = self.client.models.generate_content(
-            model=self.model,
-            contents=[prompt, resized_image],
-            config=config
+            model=self.model, contents=[prompt, resized_image], config=config
         )
 
         return json.loads(response.text)
 
-
-    def _resize_image(
-        self, image: bytes, max_size: int = 384
-    ) -> Image.Image:
+    def _resize_image(self, image: bytes | Image.Image, max_size: int = 384) -> Image.Image:
         """Resize image to meet API requirements"""
-        
-        image = Image.open(io.BytesIO(image))
-        width, height = image.size
+
+        pil_image: Image.Image
+        if isinstance(image, bytes):
+            pil_image = Image.open(io.BytesIO(image))
+        else:
+            pil_image = image
+
+        width, height = pil_image.size
 
         if width > max_size or height > max_size:
-            image.thumbnail((max_size, max_size)) # maintain aspect ratio
+            pil_image.thumbnail((max_size, max_size))  # maintain aspect ratio
 
-        return image
+        return pil_image

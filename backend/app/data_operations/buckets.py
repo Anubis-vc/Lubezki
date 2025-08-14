@@ -27,9 +27,7 @@ async def get_upload_url(
         Bucket=settings.AWS_BUCKET_NAME,
         Key=key,
         ExpiresIn=600,
-        Conditions=[
-            ["content-length-range", 0, settings.MAX_FILE_SIZE]
-        ],
+        Conditions=[["content-length-range", 0, settings.MAX_FILE_SIZE]],
     )
     logger.info(f"Successfully generated upload URL for key: {key}")
     return presigned_url, key
@@ -49,15 +47,16 @@ async def get_single_image_url(key: str) -> str:
 
 
 # TODO: there has to be a better way to do this
-async def get_image_urls_bulk(images: Sequence[Images]) -> list[str]:
+async def get_image_urls_bulk(images: Sequence[Images]) -> list[tuple[str, str]]:
     """Get presigned URLs for a list of images"""
     logger.info(f"Generating bulk download URLs for {len(images)} images")
 
     urls = []
     for image in images:
-        url = await get_single_image_url(image.storage_path)
+        url = await get_single_image_url(image.storage_key)
+        thumbnail_url = await get_single_image_url(image.thumbnail_key)
         if url:
-            urls.append(url)
+            urls.append((url, thumbnail_url))
         else:
             logger.error(f"Failed to generate download URL for image {image.image_id}")
 

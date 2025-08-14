@@ -1,5 +1,5 @@
 from typing import Annotated, Any
-from sqlalchemy import String, Text, ForeignKey
+from sqlalchemy import String, Text, ForeignKey, JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from sqlalchemy.sql import func
 from datetime import datetime
@@ -37,14 +37,15 @@ class Images(Base):
     created_at: Mapped[timestamp]
     original_name: Mapped[str] = mapped_column(String(255))
     bucket: Mapped[str] = mapped_column(String(255))
-    storage_path: Mapped[str] = mapped_column(String(255))
+    storage_key: Mapped[str] = mapped_column(String(255))
+    thumbnail_key: Mapped[str] = mapped_column(String(255))
     size_bytes: Mapped[int]
     mime_type: Mapped[str] = mapped_column(String(100))
     width_px: Mapped[int]
     height_px: Mapped[int]
     updated_at: Mapped[timestamp]
     is_analysis_complete: Mapped[bool | None] = mapped_column(default=False)
-    score: Mapped[int | None] = mapped_column(default=None)  # 0-100 score
+    score: Mapped[dict[str, Any] | None] = mapped_column(JSON, default=None)  # JSONB scores for multiple categories
     analysis: Mapped[str | None] = mapped_column(Text, default=None)
     status: Mapped[str] = mapped_column(String(20), default="uploading")
     items: Mapped[list["Items"]] = relationship(
