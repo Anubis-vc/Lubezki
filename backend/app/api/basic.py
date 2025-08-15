@@ -65,7 +65,8 @@ async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]
     try:
         pil_image = Image.open(io.BytesIO(file.file.read()))
         width, height = pil_image.size  # get original before thumbnailing later
-        thumbnail_image = pil_image.resize((500, 500))
+        thumbnail_image = pil_image.copy()
+        thumbnail_image.thumbnail((1125, 1125))
 
         # upload the files to s3
         key = await upload_file(pil_image)
@@ -110,6 +111,7 @@ async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]
                 ),
                 analysis=item["analysis"],
                 created_at=datetime.now(),
+                is_positive=item["is_perfect"] == "true",
             )
             await create_item(db, item_data)
 
@@ -118,6 +120,3 @@ async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]
     except Exception as e:
         logger.error(f"Error uploading file: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error")
-
-
-# TODO: Make a script that can do this for every file in the directory and populate gallery

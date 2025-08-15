@@ -20,6 +20,7 @@ class ItemInTable(BaseModel):
     bounding_box: BoundingBox
     analysis: str
     created_at: datetime
+    is_positive: bool
 
 
 class ItemCreate(BaseModel):
@@ -28,6 +29,7 @@ class ItemCreate(BaseModel):
     bounding_box: BoundingBox
     analysis: str
     created_at: datetime = datetime.now()
+    is_positive: bool
 
 
 class ItemBulkCreate(BaseModel):
@@ -41,6 +43,7 @@ class ItemResponse(BaseModel):
     name: str
     bounding_box: BoundingBox
     analysis: str
+    is_positive: bool
 
 
 class ItemListResponse(BaseModel):

@@ -25,6 +25,7 @@ class Items(Base):
     ]  # Store as JSON: {"center_x": int, "center_y": int, "height": int, "width": int}
     analysis: Mapped[str] = mapped_column(Text)
     created_at: Mapped[timestamp]
+    is_positive: Mapped[bool]
     # as a reminder, this is just python sugar for the foreign key relationship, does not create a column in the database
     image: Mapped["Images"] = relationship("Images", back_populates="items")
 
