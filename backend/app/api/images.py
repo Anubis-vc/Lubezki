@@ -134,6 +134,8 @@ async def create_image_record(
             mime_type=file_type,
             width_px=width,
             height_px=height,
+            thumbnail_width_px=-1,  # TODO: add thumbnail width and height
+            thumbnail_height_px=-1,
             updated_at=datetime.now(),
             is_analysis_complete=False,
             score=None,

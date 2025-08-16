@@ -1,7 +1,10 @@
+from typing import Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+import logging
+
 from app.schemas.image import ImageInTable
 from app.models.model_definitions import Images
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -18,3 +21,11 @@ async def create_image(
     await session.refresh(db_image)
     logger.info(f"Successfully created image with ID: {db_image.image_id}")
     return db_image
+
+
+async def get_images(session: AsyncSession) -> Sequence[Images]:
+    """Get all images from the database"""
+    logger.info("Getting all gallery images from the database")
+
+    result = await session.scalars(select(Images))
+    return result.all()

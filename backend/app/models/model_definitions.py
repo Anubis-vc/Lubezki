@@ -44,6 +44,8 @@ class Images(Base):
     mime_type: Mapped[str] = mapped_column(String(100))
     width_px: Mapped[int]
     height_px: Mapped[int]
+    thumbnail_width_px: Mapped[int]
+    thumbnail_height_px: Mapped[int]
     updated_at: Mapped[timestamp]
     is_analysis_complete: Mapped[bool | None] = mapped_column(default=False)
     score: Mapped[dict[str, Any] | None] = mapped_column(

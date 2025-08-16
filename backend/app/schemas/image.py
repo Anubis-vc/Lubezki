@@ -14,6 +14,8 @@ class ImageBase(BaseModel):
     mime_type: str
     width_px: int
     height_px: int
+    thumbnail_width_px: int
+    thumbnail_height_px: int
     updated_at: datetime
     is_analysis_complete: bool = False
     score: dict[str, Any] | None = Field(
@@ -66,6 +68,19 @@ class ImageResponse(BaseModel):
     )
     analysis: str | None = None
     download_url: str
+
+
+class ImageGalleryImage(BaseModel):
+    base_image: str
+    height_px: int
+    width_px: int
+    thumbnail_image: str
+    thumbnail_width_px: int
+    thumbnail_height_px: int
+
+
+class ImageGalleryResponse(BaseModel):
+    images: list[ImageGalleryImage]
 
 
 class ImageListResponse(BaseModel):

@@ -8,6 +8,8 @@ from .image import (
     ImageResponse,
     ImageListResponse,
     ImageDeleteResponse,
+    ImageGalleryImage,
+    ImageGalleryResponse,
 )
 
 # from .user import (
@@ -41,6 +43,8 @@ __all__ = [
     "ImageResponse",
     "ImageListResponse",
     "ImageDeleteResponse",
+    "ImageGalleryImage",
+    "ImageGalleryResponse",
     # User schemas
     # "UserBase",
     # "UserInTable",
