@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+backend/*lib/*
 lib64/
 parts/
 sdist/
@@ -207,3 +207,4 @@ __marimo__/
 setup.sh
 *development*
 *prompt.py
+*images/
