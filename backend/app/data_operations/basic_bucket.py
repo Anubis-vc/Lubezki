@@ -19,7 +19,7 @@ async def get_single_image_url(key: str) -> str:
 
     url = s3_client.generate_presigned_url(
         ClientMethod="get_object",
-        Params={"bucket": settings.AWS_BASIC_BUCKET_NAME, "key": key},
+        Params={"Bucket": settings.AWS_BASIC_BUCKET_NAME, "Key": key},
         ExpiresIn=86400,
     )
     logger.debug(f"Successfully generated download URL for key: {key}")
