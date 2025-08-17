@@ -1,4 +1,4 @@
-import { ImageGallery } from '@/components';
+import { ImageGallery, CollapsibleUploadPanel, InteractiveTitle } from '@/components';
 import { Image } from '@/types/image';
 
 // Cache the fetch request with ISR
@@ -19,12 +19,18 @@ export default async function Home() {
   const images = await getImages();
 
   return (
-    <main className="min-h-screen">
-
+    <main className="min-h-screen max-h-screen relative">
+      {/* Title and Upload Icon */}
       <div className="container mx-auto px-4 py-8">
+        <InteractiveTitle />
+      </div>
+
+      <CollapsibleUploadPanel />
+
+      {/* Gallery Container */}
+      <div className="container mx-auto px-4 py-5">
         <ImageGallery images={images} />
       </div>
-    
     </main>
   );
 }
