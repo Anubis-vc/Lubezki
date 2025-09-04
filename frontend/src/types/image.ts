@@ -14,6 +14,13 @@ export interface ImageData {
   status: string;
 }
 
+export interface CompositionScore {
+  color: number;
+  lighting: number;
+  composition: number;
+  overall: number;
+}
+
 export interface Image {
   base_image: string;
   thumbnail_image: string;
@@ -21,6 +28,7 @@ export interface Image {
   width_px: number;
   thumbnail_height_px: number;
   thumbnail_width_px: number;
+  scores?: CompositionScore;
 }
 
 export interface UploadResponse {
