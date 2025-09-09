@@ -56,6 +56,8 @@ class ImageUploadUpdate(BaseModel):
 
 
 class ImageResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+    
     original_name: str
     size_bytes: int
     mime_type: str
@@ -66,7 +68,6 @@ class ImageResponse(BaseModel):
         default=None, description="JSONB scores for multiple categories"
     )
     analysis: str | None = None
-    download_url: str
 
 
 class ImageGalleryImage(BaseModel):

@@ -2,6 +2,7 @@ from typing import Sequence
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 import logging
+import uuid
 
 from app.schemas.image import ImageInTable
 from app.models.model_definitions import Images
@@ -13,7 +14,7 @@ async def create_image(
     session: AsyncSession, image_data: ImageInTable
 ) -> Images | None:
     """Create a new image record"""
-    logger.info(f"Creating new image for user {image_data.user_id}")
+    logger.info("Creating new image")
 
     db_image = Images(**image_data.model_dump())
     session.add(db_image)
@@ -34,5 +35,6 @@ async def get_images(session: AsyncSession) -> Sequence[Images]:
 async def get_image_by_id(session: AsyncSession, image_id: str) -> Images | None:
     """Get an image by its ID"""
     logger.info(f"Getting image with ID: {image_id}")
-    result = await session.get(Images, image_id)
+    image_uuid = uuid.UUID(image_id)
+    result = await session.get(Images, image_uuid)
     return result

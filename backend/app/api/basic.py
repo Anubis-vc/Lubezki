@@ -5,13 +5,12 @@ from PIL import Image
 import io
 import uuid
 from datetime import datetime
-# TODO: maybe import asyncio to run the blocking gemini service in a thread
 
 from app.services.gemini_service import GeminiService
 from app.data_operations.basic_bucket import upload_file
-from app.data_operations.basic_images import create_image, get_images
+from app.data_operations.basic_images import create_image, get_images, get_image_by_id
 from app.core.config import settings
-from app.schemas.image import ImageInTable, ImageGalleryResponse
+from app.schemas.image import ImageInTable, ImageGalleryResponse, ImageResponse
 from app.data_operations.items import create_item
 from app.schemas.item import ItemCreate, BoundingBox
 from app.api.deps import SessionDep
@@ -27,7 +26,7 @@ async def get_basic_info(db: SessionDep):
 
     try:
         images = await get_images(db)
-        
+
         response_array = [
             {
                 "base_image": image.storage_key,
@@ -38,13 +37,21 @@ async def get_basic_info(db: SessionDep):
                 "thumbnail_height_px": image.thumbnail_height_px,
             }
             for image in images
-        ] 
-        
+        ]
+
         logger.info("Successfully retrieved gallery for default user")
         return {"images": response_array}
     except Exception as e:
         logger.error(f"Error fetching default gallery: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Internal server error")
+
+
+@router.get("/{image_id}", response_model=ImageResponse)
+async def get_image(image_id: str, db: SessionDep):
+    image = await get_image_by_id(db, image_id)
+    if not image:
+        raise HTTPException(status_code=404, detail="Image not found")
+    return image
 
 
 @router.post("/upload")
@@ -87,11 +94,10 @@ async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]
         # add image to db
         image_data = ImageInTable(
             image_id=image_id,
-            user_id=uuid.UUID(settings.DEFAULT_USER_ID),
             original_name=file.filename if file.filename else "unknown",
             bucket=settings.AWS_BASIC_BUCKET_NAME,
-            storage_key=f'{settings.AWS_PUBLIC_BUCKET_URL}{key}',
-            thumbnail_key=f'{settings.AWS_PUBLIC_BUCKET_URL}{thumbnail_key}',
+            storage_key=f"{settings.AWS_PUBLIC_BUCKET_URL}{key}",
+            thumbnail_key=f"{settings.AWS_PUBLIC_BUCKET_URL}{thumbnail_key}",
             size_bytes=file.size,
             mime_type=file.content_type if file.content_type else "image/*",
             width_px=width,
