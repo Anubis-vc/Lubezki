@@ -4,7 +4,7 @@ import { Image } from '@/types/image';
 // Cache the fetch request with ISR
 async function getImages(): Promise<Image[]> {
   const response = await fetch(`${process.env.BACKEND_URL || 'http://localhost:8000'}/api/v1/basic/`, {
-    next: { revalidate: 3600 } // ISR: revalidate every hour
+    next: { revalidate: 300 } // ISR: revalidate every hour
   });
   
   if (!response.ok) {

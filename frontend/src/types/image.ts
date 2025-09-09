@@ -7,7 +7,7 @@ export interface ImageData {
   width_px: number;
   height_px: number;
   is_analysis_complete: boolean;
-  score?: Record<string, any>;
+  score?: CompositionScore;
   analysis?: string;
   created_at: string;
   updated_at: string;
@@ -18,7 +18,6 @@ export interface CompositionScore {
   color: number;
   lighting: number;
   composition: number;
-  overall: number;
 }
 
 export interface Image {
@@ -29,6 +28,7 @@ export interface Image {
   thumbnail_height_px: number;
   thumbnail_width_px: number;
   scores?: CompositionScore;
+  image_id: string;
 }
 
 export interface UploadResponse {

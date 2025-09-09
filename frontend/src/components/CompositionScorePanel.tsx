@@ -9,6 +9,8 @@ interface CompositionScorePanelProps {
   imageUrl?: string;
   scores?: CompositionScore;
   imageName?: string;
+  analysis?: string;
+  isLoading?: boolean;
 }
 
 export default function CompositionScorePanel({ 
@@ -16,7 +18,9 @@ export default function CompositionScorePanel({
   onClose, 
   imageUrl, 
   scores, 
-  imageName 
+  imageName,
+  analysis,
+  isLoading = false
 }: CompositionScorePanelProps) {
   const [isAnimating, setIsAnimating] = useState(false);
 
@@ -39,7 +43,6 @@ export default function CompositionScorePanel({
     color: 85,
     lighting: 72,
     composition: 91,
-    overall: 83
   };
 
   const displayScores = scores || mockScores;
@@ -137,32 +140,49 @@ export default function CompositionScorePanel({
         {/* Right Section - Scores (1/3) */}
         <div className="w-1/3 border-l border-gray-200 flex items-center justify-center">
           <div className="p-6 w-full">
-            {/* Overall Score Circle */}
-            <div className="flex justify-center mb-8">
-              <CircularProgress 
-                value={displayScores.overall} 
-                label="Overall Score" 
-                size="w-40 h-40"
-              />
-            </div>
-
-            {/* Individual Score Circles */}
-            <div className="space-y-6">
-              <div className="flex justify-between space-x-4">
-                <CircularProgress 
-                  value={displayScores.color} 
-                  label="Color" 
-                />
-                <CircularProgress 
-                  value={displayScores.lighting} 
-                  label="Lighting" 
-                />
-                <CircularProgress 
-                  value={displayScores.composition} 
-                  label="Composition" 
-                />
+            {isLoading ? (
+              <div className="flex flex-col items-center justify-center h-full">
+                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-4"></div>
+                <p className="text-gray-600">Loading image analysis...</p>
               </div>
-            </div>
+            ) : (
+              <>
+                {/* Overall Score Circle */}
+                <div className="flex justify-center mb-8">
+                  <CircularProgress 
+                    value={Math.floor((displayScores.color / 1 + displayScores.lighting / 1 + displayScores.composition / 1) / 3)} 
+                    label="" 
+                    size="w-40 h-40"
+                  />
+                </div>
+
+                {/* Individual Score Circles */}
+                <div className="space-y-6">
+                  <div className="flex justify-between space-x-4">
+                    <CircularProgress 
+                      value={displayScores.color} 
+                      label="Color" 
+                    />
+                    <CircularProgress 
+                      value={displayScores.lighting} 
+                      label="Lighting" 
+                    />
+                    <CircularProgress 
+                      value={displayScores.composition} 
+                      label="Composition" 
+                    />
+                  </div>
+                </div>
+
+                {/* Analysis Section */}
+                {analysis && (
+                  <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-semibold text-gray-800 mb-3">Analysis</h3>
+                    <p className="text-gray-700 text-sm leading-relaxed">{analysis}</p>
+                  </div>
+                )}
+              </>
+            )}
           </div>
         </div>
       </div>
