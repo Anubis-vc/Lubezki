@@ -12,17 +12,6 @@ from .image import (
     ImageGalleryResponse,
 )
 
-# from .user import (
-#     UserBase,
-#     UserInTable,
-#     UserCreate,
-#     UserLogin,
-#     UserUpdate,
-#     UserPasswordUpdate,
-#     UserDelete,
-#     UserResponse,
-#     UserLoginResponse,
-# )
 from .item import (
     BoundingBox,
     ItemInTable,
@@ -45,17 +34,6 @@ __all__ = [
     "ImageDeleteResponse",
     "ImageGalleryImage",
     "ImageGalleryResponse",
-    # User schemas
-    # "UserBase",
-    # "UserInTable",
-    # "UserCreate",
-    # "UserLogin",
-    # "UserUpdate",
-    # "UserPasswordUpdate",
-    # "UserDelete",
-    # "UserResponse",
-    # "UserLoginResponse",
-    # Item schemas
     "BoundingBox",
     "ItemInTable",
     "ItemCreate",

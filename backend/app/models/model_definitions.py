@@ -34,7 +34,6 @@ class Images(Base):
     __tablename__ = "images"
 
     image_id: Mapped[uuid.UUID] = mapped_column(default=uuid.uuid4, primary_key=True)
-    user_id: Mapped[uuid.UUID] = mapped_column(index=True)
     created_at: Mapped[timestamp]
     original_name: Mapped[str] = mapped_column(String(255))
     bucket: Mapped[str] = mapped_column(String(255))

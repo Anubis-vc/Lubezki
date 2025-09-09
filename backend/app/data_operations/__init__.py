@@ -1,11 +1,8 @@
 # Data operations for the application
-from .images import (
+from .basic_images import (
     create_image,
     get_image_by_id,
-    get_images_for_user,
-    update_image_analysis as update_image_analysis_db,
-    update_image_upload as update_image_upload_db,
-    delete_image as delete_image_db,
+    get_images,
 )
 from .items import (
     create_item,
@@ -13,29 +10,19 @@ from .items import (
     get_items_for_image,
 )
 
-# S3 Bucket operations
-from .buckets import (
-    get_upload_url,
-    get_single_image_url,
-    get_image_urls_bulk,
-    delete_image as delete_image_s3,
+from .basic_bucket import (
+    upload_file,
 )
 
 __all__ = [
     # Image database operations
     "create_image",
     "get_image_by_id",
-    "get_images_for_user",
-    "update_image_analysis_db",
-    "update_image_upload_db",
-    "delete_image_db",
+    "get_images",
     # Item database operations
     "create_item",
     "get_item",
     "get_items_for_image",
-    # S3 bucket operations
-    "get_upload_url",
-    "get_single_image_url",
-    "get_image_urls_bulk",
-    "delete_image_s3",
+    # Item database operations
+    "upload_file",
 ]

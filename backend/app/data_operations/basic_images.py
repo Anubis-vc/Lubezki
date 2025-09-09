@@ -29,3 +29,10 @@ async def get_images(session: AsyncSession) -> Sequence[Images]:
 
     result = await session.scalars(select(Images))
     return result.all()
+
+
+async def get_image_by_id(session: AsyncSession, image_id: str) -> Images | None:
+    """Get an image by its ID"""
+    logger.info(f"Getting image with ID: {image_id}")
+    result = await session.get(Images, image_id)
+    return result

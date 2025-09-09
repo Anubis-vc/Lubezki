@@ -29,13 +29,12 @@ class ImageInTable(ImageBase):
     model_config = ConfigDict(from_attributes=True)
 
     image_id: uuid.UUID
-    user_id: uuid.UUID
     storage_key: str
     thumbnail_key: str
 
 
 class ImageCreate(ImageBase):
-    user_id: uuid.UUID
+    pass
 
 
 class ImageCreateURLResponse(BaseModel):
