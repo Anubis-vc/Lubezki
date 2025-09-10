@@ -13,11 +13,11 @@ interface CompositionScorePanelProps {
   isLoading?: boolean;
 }
 
-export default function CompositionScorePanel({ 
-  isOpen, 
-  onClose, 
-  imageUrl, 
-  scores, 
+export default function CompositionScorePanel({
+  isOpen,
+  onClose,
+  imageUrl,
+  scores,
   imageName,
   analysis,
   isLoading = false
@@ -38,25 +38,22 @@ export default function CompositionScorePanel({
     setTimeout(() => onClose(), 300);
   };
 
-  // Mock data for demonstration - replace with actual scores when available
-  const mockScores: CompositionScore = {
-    color: 85,
-    lighting: 72,
-    composition: 91,
-  };
-
-  const displayScores = scores || mockScores;
-
-    const getScoreColor = (value: number) => {
+  const getScoreColor = (value: number) => {
     if (value >= 80) return "#10b981"; // green-500
     if (value >= 60) return "#f59e0b"; // amber-500
     if (value >= 40) return "#f97316"; // orange-500
     return "#ef4444"; // red-500
   };
 
-  const CircularProgress = ({ value, label, size = "w-24 h-24" }: { 
-    value: number; 
-    label: string; 
+  // Helper function to safely parse scores with fallback
+  const parseScore = (score: string | undefined): number => {
+    if (!score) return 0;
+    return parseInt(score, 10) || 0;
+  };
+
+  const CircularProgress = ({ value, label, size = "w-24 h-24" }: {
+    value: number;
+    label: string;
     size?: string;
   }) => {
     const radius = 40;
@@ -103,10 +100,9 @@ export default function CompositionScorePanel({
   };
 
   return (
-    <div 
-      className={`fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${
-        isAnimating ? 'translate-x-0' : 'translate-x-full'
-      }`}
+    <div
+      className={`fixed inset-0 bg-white z-40 transition-transform duration-300 ease-in-out ${isAnimating ? 'translate-x-0' : 'translate-x-full'
+        }`}
     >
       {/* Close Button */}
       <button
@@ -124,9 +120,9 @@ export default function CompositionScorePanel({
         <div className="w-2/3 flex items-center justify-center p-6">
           {imageUrl ? (
             <div className="w-full h-full flex items-center justify-center">
-              <img 
-                src={imageUrl} 
-                alt={imageName || "Analyzed image"} 
+              <img
+                src={imageUrl}
+                alt={imageName || "Analyzed image"}
                 className="max-w-[90%] max-h-[90%] object-contain rounded-lg"
               />
             </div>
@@ -149,9 +145,9 @@ export default function CompositionScorePanel({
               <>
                 {/* Overall Score Circle */}
                 <div className="flex justify-center mb-8">
-                  <CircularProgress 
-                    value={Math.floor((displayScores.color / 1 + displayScores.lighting / 1 + displayScores.composition / 1) / 3)} 
-                    label="" 
+                  <CircularProgress
+                    value={Math.floor((parseScore(scores?.color) + parseScore(scores?.lighting) + parseScore(scores?.composition)) / 3)}
+                    label=""
                     size="w-40 h-40"
                   />
                 </div>
@@ -159,17 +155,17 @@ export default function CompositionScorePanel({
                 {/* Individual Score Circles */}
                 <div className="space-y-6">
                   <div className="flex justify-between space-x-4">
-                    <CircularProgress 
-                      value={displayScores.color} 
-                      label="Color" 
+                    <CircularProgress
+                      value={parseScore(scores?.color)}
+                      label="Color"
                     />
-                    <CircularProgress 
-                      value={displayScores.lighting} 
-                      label="Lighting" 
+                    <CircularProgress
+                      value={parseScore(scores?.lighting)}
+                      label="Lighting"
                     />
-                    <CircularProgress 
-                      value={displayScores.composition} 
-                      label="Composition" 
+                    <CircularProgress
+                      value={parseScore(scores?.composition)}
+                      label="Composition"
                     />
                   </div>
                 </div>

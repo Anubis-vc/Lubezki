@@ -15,9 +15,9 @@ export interface ImageData {
 }
 
 export interface CompositionScore {
-  color: number;
-  lighting: number;
-  composition: number;
+  color: string;
+  lighting: string;
+  composition: string;
 }
 
 export interface Image {

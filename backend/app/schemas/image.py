@@ -71,6 +71,7 @@ class ImageResponse(BaseModel):
 
 
 class ImageGalleryImage(BaseModel):
+    image_id: str
     base_image: str
     height_px: int
     width_px: int

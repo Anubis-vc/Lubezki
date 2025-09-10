@@ -29,6 +29,7 @@ async def get_basic_info(db: SessionDep):
 
         response_array = [
             {
+                "image_id": str(image.image_id),
                 "base_image": image.storage_key,
                 "thumbnail_image": image.thumbnail_key,
                 "height_px": image.height_px,
