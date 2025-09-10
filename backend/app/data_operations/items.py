@@ -28,11 +28,11 @@ async def create_item(session: AsyncSession, item: ItemCreate) -> Items | None:
 
 
 async def get_items_for_image(
-    session: AsyncSession, image_id: int
+    session: AsyncSession, image_id: str
 ) -> tuple[Sequence[Items], int]:
     logger.info(f"Fetching items for image {image_id}")
 
-    items_stmt = select(Items).where(Items.image_id == image_id)
+    items_stmt = select(Items).where(Items.image_id == uuid.UUID(image_id))
     items = (await session.scalars(items_stmt)).all()
     logger.info(f"Retrieved {len(items)} items for image {image_id}")
     return items, len(items)

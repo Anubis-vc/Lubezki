@@ -32,6 +32,7 @@ class DatabaseSessionManager:
             echo=engine_kwargs.get("echo", False),
             poolclass=NullPool,
             connect_args={
+                "statement_cache_size": 0,
                 "prepared_statement_name_func": lambda: f"__asyncpg_{uuid4()}__",
             },
         )

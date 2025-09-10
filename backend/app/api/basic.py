@@ -9,8 +9,15 @@ from datetime import datetime
 from app.services.gemini_service import GeminiService
 from app.data_operations.basic_bucket import upload_file
 from app.data_operations.basic_images import create_image, get_images, get_image_by_id
+from app.data_operations.items import get_items_for_image
 from app.core.config import settings
-from app.schemas.image import ImageInTable, ImageGalleryResponse, ImageResponse
+from app.schemas.image import (
+    ImageInTable,
+    ImageGalleryResponse,
+    ImageResponse,
+    ImageAndItemResponse,
+)
+from app.schemas.item import ItemInTable
 from app.data_operations.items import create_item
 from app.schemas.item import ItemCreate, BoundingBox
 from app.api.deps import SessionDep
@@ -47,12 +54,19 @@ async def get_basic_info(db: SessionDep):
         raise HTTPException(status_code=500, detail="Internal server error")
 
 
-@router.get("/{image_id}", response_model=ImageResponse)
+@router.get("/{image_id}", response_model=ImageAndItemResponse)
 async def get_image(image_id: str, db: SessionDep):
     image = await get_image_by_id(db, image_id)
     if not image:
         raise HTTPException(status_code=404, detail="Image not found")
-    return image
+
+    items = await get_items_for_image(db, image_id)
+
+    # Convert SQLAlchemy objects to Pydantic models
+    image_response = ImageResponse.model_validate(image)
+    items_response = [ItemInTable.model_validate(item) for item in items[0]]
+
+    return {"image": image_response, "items": items_response}
 
 
 @router.post("/upload")

@@ -3,6 +3,8 @@ from datetime import datetime
 from typing import Sequence, Any
 import uuid
 
+from app.schemas.item import ItemInTable
+
 
 class ImageBase(BaseModel):
     created_at: datetime
@@ -57,7 +59,7 @@ class ImageUploadUpdate(BaseModel):
 
 class ImageResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
-    
+
     original_name: str
     size_bytes: int
     mime_type: str
@@ -95,3 +97,8 @@ class ImageDeleteResponse(BaseModel):
     message: str
     s3_deleted: bool
     db_deleted: bool
+
+
+class ImageAndItemResponse(BaseModel):
+    image: ImageResponse
+    items: list[ItemInTable]
