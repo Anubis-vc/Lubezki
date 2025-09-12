@@ -6,3 +6,4 @@ export { default as InteractiveTitle } from './InteractiveTitle';
 export { default as CompositionScorePanel } from './CompositionScorePanel';
 export { default as CompositionScores } from './CompositionScores';
 export { default as CompositionItems } from './CompositionItems';
+export { default as UploadSummary } from './UploadSummary';

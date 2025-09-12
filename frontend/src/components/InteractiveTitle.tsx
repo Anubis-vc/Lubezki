@@ -7,7 +7,7 @@ export default function InteractiveTitle() {
   };
 
   return (
-    <div className="flex flex-row items-center justify-between">
+    <div className="flex flex-row items-center justify-between border-b-1 border-gray-400 pb-4">
       <div className="flex flex-col items-start gap-2">
         <h1 className="text-5xl font-bold text-gray-800">Lubezki</h1>
         <h2 className="text-2xl font-bold text-gray-400">Image Analysis</h2>

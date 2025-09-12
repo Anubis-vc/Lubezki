@@ -1,11 +1,19 @@
 'use client';
 
 import { useState } from 'react';
+import { CompositionScore, ItemData } from '@/types/image';
+import UploadSummary from './UploadSummary';
 
 export default function ImageUpload() {
   const [isDragOver, setIsDragOver] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<string>('');
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string>('');
+  const [analysisData, setAnalysisData] = useState<{
+    scores?: CompositionScore;
+    analysis?: string;
+    items?: ItemData[];
+  } | null>(null);
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -46,13 +54,13 @@ export default function ImageUpload() {
     }
 
     setIsUploading(true);
-    setUploadStatus('Uploading...');
+    setUploadStatus('Uploading and analyzing...');
 
     try {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/api/v1/basic/upload-for-gallery`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000'}/api/v1/basic/upload`, {
         method: 'POST',
         body: formData,
       });
@@ -62,10 +70,35 @@ export default function ImageUpload() {
       }
 
       const data = await response.json();
-      setUploadStatus(data.message);
       
-      // Clear status after 5 seconds
-      setTimeout(() => setUploadStatus(''), 5000);
+      // Create object URL for the uploaded image
+      const imageUrl = URL.createObjectURL(file);
+      setUploadedImageUrl(imageUrl);
+      
+      // Process analysis data
+      if (data.analysis) {
+        const items: ItemData[] = data.analysis.objects?.map((item: any, index: number) => ({
+          item_id: `temp-${index}`,
+          image_id: 'temp',
+          name: item.name,
+          bounding_box: {
+            x_min: item.bounding_box.x_min,
+            x_max: item.bounding_box.x_max,
+            y_min: item.bounding_box.y_min,
+            y_max: item.bounding_box.y_max,
+          },
+          analysis: item.analysis,
+          is_positive: item.is_perfect === 'true',
+        })) || [];
+
+        setAnalysisData({
+          scores: data.analysis.scores,
+          analysis: data.analysis.analysis,
+          items: items,
+        });
+      }
+      
+      setUploadStatus('');
     } catch (error) {
       setUploadStatus('Upload failed. Please try again.');
       console.error('Upload error:', error);
@@ -73,6 +106,43 @@ export default function ImageUpload() {
       setIsUploading(false);
     }
   };
+
+  // Show summary if analysis is complete
+  if (analysisData && uploadedImageUrl) {
+    return (
+      <div className="h-3/4 flex flex-col space-y-6">
+        <UploadSummary
+          imageUrl={uploadedImageUrl}
+          scores={analysisData.scores}
+          analysis={analysisData.analysis}
+          items={analysisData.items}
+          onViewFullAnalysis={() => {
+            // Dispatch event to open full analysis panel
+            window.dispatchEvent(new CustomEvent('openFullAnalysis', {
+              detail: {
+                imageUrl: uploadedImageUrl,
+                scores: analysisData.scores,
+                analysis: analysisData.analysis,
+                items: analysisData.items,
+              }
+            }));
+          }}
+        />
+        
+        {/* Reset Button */}
+        <button
+          onClick={() => {
+            setAnalysisData(null);
+            setUploadedImageUrl('');
+            setUploadStatus('');
+          }}
+          className="w-full px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium"
+        >
+          Upload Another Image
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="h-3/4 flex flex-col space-y-6">
@@ -117,7 +187,7 @@ export default function ImageUpload() {
             ? 'bg-green-100 text-green-700' 
             : uploadStatus.includes('failed') || uploadStatus.includes('Please')
             ? 'bg-red-100 text-red-700'
-            : 'bg-blue-100 text-blue-700'
+            : 'bg-yellow-100 text-yellow-600'
         }`}>
           {uploadStatus}
         </div>

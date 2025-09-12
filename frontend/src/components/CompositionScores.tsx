@@ -84,8 +84,8 @@ export default function CompositionScores({
   }
 
   return (
-    <div className="w-full h-full flex flex-col">
-      <div className="flex-1 overflow-y-auto">
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="w-full max-h-full overflow-y-auto">
         <div className="p-6">
           {/* Overall Score Circle */}
           <div className="flex justify-center mb-8">
@@ -116,7 +116,7 @@ export default function CompositionScores({
 
           {/* Analysis Section */}
           {analysis && (
-            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+            <div className="mt-8 p-4 bg-gray-100 rounded-lg">
               <h3 className="text-lg font-semibold text-gray-800 mb-3">Analysis</h3>
               <p className="text-gray-700 text-sm leading-relaxed">{analysis}</p>
             </div>
