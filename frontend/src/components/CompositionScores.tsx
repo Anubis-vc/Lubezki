@@ -84,41 +84,45 @@ export default function CompositionScores({
   }
 
   return (
-    <div className="p-6 w-full">
-      {/* Overall Score Circle */}
-      <div className="flex justify-center mb-8">
-        <CircularProgress
-          value={Math.floor((parseScore(scores?.color) + parseScore(scores?.lighting) + parseScore(scores?.composition)) / 3)}
-          label=""
-          size="w-40 h-40"
-        />
-      </div>
+    <div className="w-full h-full flex flex-col">
+      <div className="flex-1 overflow-y-auto">
+        <div className="p-6">
+          {/* Overall Score Circle */}
+          <div className="flex justify-center mb-8">
+            <CircularProgress
+              value={Math.floor((parseScore(scores?.color) + parseScore(scores?.lighting) + parseScore(scores?.composition)) / 3)}
+              label=""
+              size="w-40 h-40"
+            />
+          </div>
 
-      {/* Individual Score Circles */}
-      <div className="space-y-6">
-        <div className="flex justify-between space-x-4">
-          <CircularProgress
-            value={parseScore(scores?.color)}
-            label="Color"
-          />
-          <CircularProgress
-            value={parseScore(scores?.lighting)}
-            label="Lighting"
-          />
-          <CircularProgress
-            value={parseScore(scores?.composition)}
-            label="Composition"
-          />
+          {/* Individual Score Circles */}
+          <div className="space-y-6">
+            <div className="flex justify-between space-x-4">
+              <CircularProgress
+                value={parseScore(scores?.color)}
+                label="Color"
+              />
+              <CircularProgress
+                value={parseScore(scores?.lighting)}
+                label="Lighting"
+              />
+              <CircularProgress
+                value={parseScore(scores?.composition)}
+                label="Composition"
+              />
+            </div>
+          </div>
+
+          {/* Analysis Section */}
+          {analysis && (
+            <div className="mt-8 p-4 bg-gray-50 rounded-lg">
+              <h3 className="text-lg font-semibold text-gray-800 mb-3">Analysis</h3>
+              <p className="text-gray-700 text-sm leading-relaxed">{analysis}</p>
+            </div>
+          )}
         </div>
       </div>
-
-      {/* Analysis Section */}
-      {analysis && (
-        <div className="mt-8 p-4 bg-gray-50 rounded-lg">
-          <h3 className="text-lg font-semibold text-gray-800 mb-3">Analysis</h3>
-          <p className="text-gray-700 text-sm leading-relaxed">{analysis}</p>
-        </div>
-      )}
     </div>
   );
 }
