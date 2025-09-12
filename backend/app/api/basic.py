@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, HTTPException, UploadFile, Depends, Request
 import logging
 from typing import Any
 from PIL import Image
@@ -20,7 +20,13 @@ from app.schemas.image import (
 from app.schemas.item import ItemInTable
 from app.data_operations.items import create_item
 from app.schemas.item import ItemCreate, BoundingBox
-from app.api.deps import SessionDep
+from app.api.deps import SessionDep, verify_api_key
+from app.core.config import settings
+from slowapi import Limiter
+from slowapi.util import get_remote_address
+
+# Create limiter instance
+limiter = Limiter(key_func=get_remote_address)
 
 router = APIRouter(prefix="/basic")
 logger = logging.getLogger(__name__)
@@ -70,7 +76,8 @@ async def get_image(image_id: str, db: SessionDep):
 
 
 @router.post("/upload")
-async def upload_image(file: UploadFile) -> dict[str, Any]:
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
+async def upload_image(request: Request, file: UploadFile) -> dict[str, Any]:
     if file.content_type and file.content_type != "image/jpeg":
         raise HTTPException(status_code=400, detail="Invalid file type")
 
@@ -86,7 +93,13 @@ async def upload_image(file: UploadFile) -> dict[str, Any]:
 
 
 @router.post("/upload-for-gallery")
-async def upload_for_gallery(file: UploadFile, db: SessionDep) -> dict[str, str]:
+@limiter.limit(f"{settings.RATE_LIMIT_PER_MINUTE}/minute")
+async def upload_for_gallery(
+    file: UploadFile, 
+    db: SessionDep,
+    request: Request,
+    api_key: str = Depends(verify_api_key),
+) -> dict[str, str]:
     if file.content_type and file.content_type != "image/jpeg":
         raise HTTPException(status_code=400, detail="Invalid file type")
 

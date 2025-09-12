@@ -28,6 +28,12 @@ class Settings(BaseSettings):
     # File upload settings
     MAX_FILE_SIZE: int = 20 * 1024 * 1024  # 20MB
     ALLOWED_EXTENSIONS: list[str] = [".jpg", ".jpeg", ".png", ".raw"]
+    
+    # Security
+    API_KEY: str = "missing"
+    
+    # Rate limiting
+    RATE_LIMIT_PER_MINUTE: int = 10
 
     env: str = "dev"
     echo_sql: bool = False
