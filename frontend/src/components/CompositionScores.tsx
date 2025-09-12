@@ -76,7 +76,7 @@ export default function CompositionScores({
 
   if (isLoading) {
     return (
-      <div className="flex flex-col items-center justify-center h-full">
+      <div className="flex flex-col items-center justify-center p-6">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mb-4"></div>
         <p className="text-gray-600">Loading image analysis...</p>
       </div>
@@ -84,9 +84,8 @@ export default function CompositionScores({
   }
 
   return (
-    <div className="w-full h-full flex items-center justify-center">
-      <div className="w-full max-h-full overflow-y-auto">
-        <div className="p-6">
+    <div className="w-full">
+      <div className="p-6">
           {/* Overall Score Circle */}
           <div className="flex justify-center mb-8">
             <CircularProgress
@@ -122,7 +121,6 @@ export default function CompositionScores({
             </div>
           )}
         </div>
-      </div>
     </div>
   );
 }

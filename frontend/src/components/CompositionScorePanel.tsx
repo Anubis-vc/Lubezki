@@ -60,9 +60,9 @@ export default function CompositionScorePanel({
         </svg>
       </button>
 
-      <div className="h-full flex">
-        {/* Left Section - Image Display (2/3) */}
-        <div className="w-2/3 flex items-center justify-center p-6">
+      <div className="h-full flex overflow-y-auto flex-col lg:flex-row">
+        {/* Image Display - Full width on mobile, 2/3 on desktop */}
+        <div className="w-full lg:w-2/3 flex items-center justify-center p-6">
           {imageUrl ? (
             <div className="w-full h-full flex items-center justify-center">
               <img
@@ -78,8 +78,8 @@ export default function CompositionScorePanel({
           )}
         </div>
 
-        {/* Right Section - Tabbed Content (1/3) */}
-        <div className="w-1/3 border-l border-gray-200 flex flex-col h-full">
+        {/* Tabbed Content - Full width on mobile, 1/3 on desktop */}
+        <div className="w-full lg:w-1/3 border-t lg:border-t-0 lg:border-l border-gray-200 flex flex-col h-full">
           {/* Tab Navigation */}
           <div className="flex border-b border-gray-200 flex-shrink-0">
             <button
@@ -105,15 +105,13 @@ export default function CompositionScorePanel({
           </div>
 
           {/* Tab Content */}
-          <div className="flex-1 min-h-0">
+          <div className="flex-1 overflow-y-auto">
             {activeTab === 'scores' ? (
-              <div className="flex items-center justify-center h-full">
-                <CompositionScores
-                  scores={scores}
-                  analysis={analysis}
-                  isLoading={isLoading}
-                />
-              </div>
+              <CompositionScores
+                scores={scores}
+                analysis={analysis}
+                isLoading={isLoading}
+              />
             ) : (
               <CompositionItems
                 items={items}
