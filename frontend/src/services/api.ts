@@ -1,8 +1,8 @@
-import { ImageData } from '@/types/image';
+import { ImageWithItemsResponse } from '@/types/image';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
 
-export async function fetchImageData(imageId: string): Promise<ImageData> {
+export async function fetchImageData(imageId: string): Promise<ImageWithItemsResponse> {
   try {
     const response = await fetch(`${API_BASE_URL}/basic/${imageId}`);
     

@@ -1,6 +1,4 @@
 export interface ImageData {
-  url: string;
-  thumbnail_url?: string;
   original_name: string;
   size_bytes: number;
   mime_type: string;
@@ -9,9 +7,27 @@ export interface ImageData {
   is_analysis_complete: boolean;
   score?: CompositionScore;
   analysis?: string;
-  created_at: string;
-  updated_at: string;
-  status: string;
+}
+
+export interface BoundingBox {
+  y_min: number;
+  y_max: number;
+  x_min: number;
+  x_max: number;
+}
+
+export interface ItemData {
+  item_id: string;
+  image_id: string;
+  name: string;
+  bounding_box: BoundingBox;
+  analysis: string;
+  is_positive: boolean;
+}
+
+export interface ImageWithItemsResponse {
+  image: ImageData;
+  items: ItemData[];
 }
 
 export interface CompositionScore {

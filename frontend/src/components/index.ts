@@ -3,4 +3,6 @@ export { default as ImageGallery } from './ImageGallery';
 export { default as ImageCard } from './ImageCard';
 export { default as CollapsibleUploadPanel } from './CollapsibleUploadPanel';
 export { default as InteractiveTitle } from './InteractiveTitle';
-export { default as CompositionScorePanel } from './CompositionScorePanel'; 
+export { default as CompositionScorePanel } from './CompositionScorePanel';
+export { default as CompositionScores } from './CompositionScores';
+export { default as CompositionItems } from './CompositionItems';

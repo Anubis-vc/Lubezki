@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { Image as ImageType, ImageData } from "@/types/image";
+import { Image as ImageType, ImageWithItemsResponse } from "@/types/image";
 import ImageCard from "./ImageCard";
 import CompositionScorePanel from "./CompositionScorePanel";
 import { fetchImageData } from "@/services/api";
@@ -11,7 +11,7 @@ interface ImageGalleryProps {
 
 export default function ImageGallery({ images }: ImageGalleryProps) {
   const [selectedImage, setSelectedImage] = useState<ImageType | null>(null);
-  const [fullImageData, setFullImageData] = useState<ImageData | null>(null);
+  const [fullImageData, setFullImageData] = useState<ImageWithItemsResponse | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -62,9 +62,10 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         isOpen={isPanelOpen}
         onClose={handleClosePanel}
         imageUrl={selectedImage?.base_image}
-        imageName={fullImageData?.original_name || selectedImage?.base_image?.split('/').pop()}
-        scores={fullImageData?.score || selectedImage?.scores}
-        analysis={fullImageData?.analysis}
+        imageName={fullImageData?.image.original_name || selectedImage?.base_image?.split('/').pop()}
+        scores={fullImageData?.image.score || selectedImage?.scores}
+        analysis={fullImageData?.image.analysis}
+        items={fullImageData?.items}
         isLoading={isLoading}
       />
     </>
