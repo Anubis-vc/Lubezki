@@ -1,14 +1,14 @@
-from pydantic import BaseModel, Field, ConfigDict
+from pydantic import BaseModel, ConfigDict
 from datetime import datetime
 from typing import Sequence
 import uuid
 
 
 class BoundingBox(BaseModel):
-    center_x: int
-    center_y: int
-    height: int = Field(gt=0)
-    width: int = Field(gt=0)
+    y_min: int
+    y_max: int
+    x_min: int
+    x_max: int
 
 
 class ItemInTable(BaseModel):
@@ -17,7 +17,7 @@ class ItemInTable(BaseModel):
     item_id: uuid.UUID
     image_id: uuid.UUID
     name: str
-    bounding_box: BoundingBox
+    bounding_box: dict[str, int]  # JSON from database
     analysis: str
     created_at: datetime
     is_positive: bool
