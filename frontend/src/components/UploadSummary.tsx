@@ -1,5 +1,6 @@
 'use client';
 
+import Image from 'next/image';
 import { CompositionScore, ItemData } from '@/types/image';
 
 interface UploadSummaryProps {
@@ -14,7 +15,6 @@ export default function UploadSummary({
   imageUrl,
   scores,
   analysis,
-  items = [],
   onViewFullAnalysis
 }: UploadSummaryProps) {
   // Helper function to safely parse scores with fallback

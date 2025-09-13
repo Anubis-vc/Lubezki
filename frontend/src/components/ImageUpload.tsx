@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { CompositionScore, ItemData } from '@/types/image';
+import { CompositionScore, ItemData, AnalysisObject } from '@/types/image';
 import UploadSummary from './UploadSummary';
 
 export default function ImageUpload() {
@@ -77,7 +77,7 @@ export default function ImageUpload() {
       
       // Process analysis data
       if (data.analysis) {
-        const items: ItemData[] = data.analysis.objects?.map((item: any, index: number) => ({
+        const items: ItemData[] = data.analysis.objects?.map((item: AnalysisObject, index: number) => ({
           item_id: `temp-${index}`,
           image_id: 'temp',
           name: item.name,

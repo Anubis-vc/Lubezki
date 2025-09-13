@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { CompositionScore, ItemData } from '@/types/image';
 import CompositionScores from './CompositionScores';
 import CompositionItems from './CompositionItems';
@@ -14,6 +15,8 @@ interface CompositionScorePanelProps {
   analysis?: string;
   items?: ItemData[];
   isLoading?: boolean;
+  imageWidth?: number;
+  imageHeight?: number;
 }
 
 export default function CompositionScorePanel({
@@ -24,7 +27,9 @@ export default function CompositionScorePanel({
   imageName,
   analysis,
   items = [],
-  isLoading = false
+  isLoading = false,
+  imageWidth,
+  imageHeight
 }: CompositionScorePanelProps) {
   const [isAnimating, setIsAnimating] = useState(false);
   const [activeTab, setActiveTab] = useState<'scores' | 'items'>('scores');
@@ -65,10 +70,13 @@ export default function CompositionScorePanel({
         <div className="w-full lg:w-2/3 flex items-center justify-center p-6">
           {imageUrl ? (
             <div className="w-full h-full flex items-center justify-center">
-              <img
+              <Image
                 src={imageUrl}
                 alt={imageName || "Analyzed image"}
+                width={imageWidth || 800}
+                height={imageHeight || 600}
                 className="max-w-[90%] max-h-[90%] object-contain rounded-lg"
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
           ) : (

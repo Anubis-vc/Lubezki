@@ -27,7 +27,7 @@ export default function CompositionItems({
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
         </svg>
         <p className="text-lg font-medium">No items detected</p>
-        <p className="text-sm">The AI didn't identify any specific objects to analyze.</p>
+        <p className="text-sm">The AI didn&apos;t identify any specific objects to analyze.</p>
       </div>
     );
   }

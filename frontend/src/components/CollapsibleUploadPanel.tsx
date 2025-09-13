@@ -85,6 +85,8 @@ export default function CollapsibleUploadPanel() {
           analysis={analysisData.analysis}
           items={analysisData.items}
           isLoading={false}
+          imageWidth={undefined}
+          imageHeight={undefined}
         />
       )}
     </>
