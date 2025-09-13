@@ -1,10 +1,10 @@
 import { ImageWithItemsResponse } from '@/types/image';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'https://lubezki.onrender.com/api/v1';
+const API_BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL || 'https://lubezki.onrender.com';
 
 export async function fetchImageData(imageId: string): Promise<ImageWithItemsResponse> {
   try {
-    const response = await fetch(`${API_BASE_URL}/basic/${imageId}`);
+    const response = await fetch(`${API_BASE_URL}/api/v1/basic/${imageId}`);
     
     if (!response.ok) {
       throw new Error(`Failed to fetch image data: ${response.statusText}`);
