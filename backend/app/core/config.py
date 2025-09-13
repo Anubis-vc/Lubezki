@@ -8,7 +8,6 @@ class Settings(BaseSettings):
     API_STR: str = "/api/v1"
     PROJECT_NAME: str = "Lubezki"
 
-    # TODO: make this good
     # CORS
     BACKEND_CORS_ORIGINS: list[str] = [
         "http://localhost:3000",
@@ -17,6 +16,10 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "http://127.0.0.1:5173",
         "http://127.0.0.1:8000",
+        "https://www.vedchugh.info",
+        "https://vedchugh.info",
+        "https://www.lubezki.vedchugh.info",
+        "https://lubezki.vedchugh.info",
     ]
 
     # Database
@@ -37,7 +40,7 @@ class Settings(BaseSettings):
 
     env: str = "dev"
     echo_sql: bool = False
-    log_level: str = "DEBUG"  # TODO: change to INFO in production
+    log_level: str = "INFO"
 
     AWS_BUCKET_NAME: str = "dev"
     AWS_BASIC_BUCKET_NAME: str = "public-lubezki-images"
