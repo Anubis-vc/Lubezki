@@ -14,7 +14,6 @@ export default function UploadSummary({
   imageUrl,
   scores,
   analysis,
-  items = [],
   onViewFullAnalysis
 }: UploadSummaryProps) {
   // Helper function to safely parse scores with fallback

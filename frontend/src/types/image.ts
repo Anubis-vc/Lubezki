@@ -55,4 +55,11 @@ export interface UploadResponse {
 export interface GalleryResponse {
   images: Image[];
   total: number;
+}
+
+export interface AnalysisObject {
+  name: string;
+  bounding_box: BoundingBox;
+  analysis: string;
+  is_perfect: string;
 } 

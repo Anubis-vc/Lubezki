@@ -67,6 +67,8 @@ export default function ImageGallery({ images }: ImageGalleryProps) {
         analysis={fullImageData?.image.analysis}
         items={fullImageData?.items}
         isLoading={isLoading}
+        imageWidth={fullImageData?.image.width_px || selectedImage?.width_px}
+        imageHeight={fullImageData?.image.height_px || selectedImage?.height_px}
       />
     </>
   );

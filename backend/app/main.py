@@ -72,7 +72,7 @@ app.add_middleware(
         "Access-Control-Request-Headers",
     ],
     expose_headers=["Content-Length", "Content-Range"],
-    max_age=86400,  # Cache preflight for 24 hours
+    max_age=86400,
 )
 
 # Include API router
