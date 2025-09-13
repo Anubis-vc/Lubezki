@@ -1,6 +1,5 @@
 'use client';
 
-import Image from 'next/image';
 import { CompositionScore, ItemData } from '@/types/image';
 
 interface UploadSummaryProps {

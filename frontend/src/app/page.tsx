@@ -3,16 +3,22 @@ import { Image } from '@/types/image';
 
 // Cache the fetch request with ISR
 async function getImages(): Promise<Image[]> {
-  const response = await fetch(`${process.env.BACKEND_URL || 'http://localhost:8000'}/api/v1/basic/`, {
-    next: { revalidate: 300 } // ISR: revalidate every hour
-  });
-  
-  if (!response.ok) {
-    throw new Error('Failed to fetch gallery data');
+  try {
+    const response = await fetch(`${process.env.BACKEND_URL || 'https://lubezki.onrender.com'}/api/v1/basic/`, {
+      next: { revalidate: 300 } // ISR: revalidate every hour
+    });
+    
+    if (!response.ok) {
+      console.warn('Backend not available during build, returning empty array');
+      return [];
+    }
+    
+    const data = await response.json();
+    return data.images || [];
+  } catch (error) {
+    console.warn('Failed to fetch gallery data during build:', error);
+    return [];
   }
-  
-  const data = await response.json();
-  return data.images || [];
 }
 
 export default async function Home() {
